@@ -1,0 +1,32 @@
+import requests
+import json
+
+url = "https://api.agmarknet.gov.in/v1/all-type-report/all-type-report"
+
+params = {
+    "type": 2,
+    "from_date": "2026-03-27",
+    "to_date": "2026-03-27",
+    "msp": 0,
+    "period": "date",
+    "group": "[1]",
+    "commodity": "[99999]",
+    "state": "[99999]",   # ✅ FIXED
+    "district": "[]",
+    "market": "[]",
+    "page": 1,
+    "options": 3,
+    "limit": 10
+}
+
+headers = {
+    "User-Agent": "Mozilla/5.0",
+    "Referer": "https://agmarknet.gov.in/"
+}
+
+res = requests.get(url, params=params, headers=headers)
+
+data = res.json()
+
+print("Status:", res.status_code)
+print(json.dumps(data, indent=2))
