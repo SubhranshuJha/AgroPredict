@@ -1,0 +1,13 @@
+Commodity,Actual Modal Price (Rs./Quintal),Predicted Modal Price (Rs./Quintal),Difference (Rs.),Error %
+Wheat,2535.81,2536.83,1.02,0.04
+Jowar(Sorghum),3070.81,3037.41,-33.4,1.09
+Ragi(Finger Millet),3329.27,3370.11,40.84,1.23
+Bajra(Pearl Millet/Cumbu),2440.85,2398.62,-42.23,1.73
+Barley(Jau),2268.73,2171.5,-97.23,4.29
+Kutki,3300.0,3111.28,-188.72,5.72
+Paddy(Basmati),3226.13,2913.78,-312.35,9.68
+Paddy(Common),2579.04,2281.66,-297.38,11.53
+Kodo Millet(Varagu),2025.52,2259.3,233.78,11.54
+Rice,2929.59,3353.5,423.91,14.47
+Maize,1695.7,2117.28,421.58,24.86
+Foxtail Millet(Navane),1920.0,3089.66,1169.66,60.92
