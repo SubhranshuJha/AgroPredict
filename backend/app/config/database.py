@@ -1,21 +1,24 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
+import os
 
-# 🔹 Replace with your actual DB credentials
-DATABASE_URL = "postgresql://postgres:golu4923@localhost:5432/agropredict"
+DATABASE_URL = os.getenv( "DATABASE_URL" )
 
-# Engine
-engine = create_engine(DATABASE_URL)
+# Engine with pooling (important)
+engine = create_engine( DATABASE_URL )
 
-# Session (used for DB operations)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Session
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
 
-# Base class (for models)
+# Base class
 Base = declarative_base()
 
 
-# Dependency (used in FastAPI routes)
+# Dependency for FastAPI
 def get_db():
     db = SessionLocal()
     try:
