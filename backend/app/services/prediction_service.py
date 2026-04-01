@@ -1,3 +1,5 @@
+from unittest import result
+
 import numpy as np
 import joblib
 from tensorflow.keras.models import load_model
@@ -34,19 +36,21 @@ def predict_next_day(df):
     scaled_data = prepare_input(df)
 
     # Check enough data
-    if len(scaled_data) < 7:
+    if len(scaled_data) < 14:
         raise Exception("Not enough data for prediction (need 7 days)")
 
     # Last 7 days
-    last_7_days = scaled_data[-7:]
+    last_14_days = scaled_data[-14:]
 
     # Reshape for LSTM
-    X = np.array([last_7_days])  # (1, 7, 76)
+    X = np.array([last_14_days])  # (1, 7, 76)
+    
 
     # Predict
     pred_scaled = model.predict(X)
 
     # Inverse scaling
     pred = target_scaler.inverse_transform(pred_scaled)
-
-    return pred[0]
+    target_cols = config["target_cols"]
+    result = dict(zip(target_cols, pred[0]))
+    return result
