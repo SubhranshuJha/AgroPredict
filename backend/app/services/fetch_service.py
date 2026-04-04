@@ -1,8 +1,13 @@
-import requests
-import pandas as pd
 from datetime import datetime, timedelta
 
+import pandas as pd
+import requests
+
 API_URL = "https://api.agmarknet.gov.in/v1/all-type-report/all-type-report"
+
+
+class FetchDataError(Exception):
+    pass
 
 
 def get_date_range(last_date):
@@ -27,11 +32,11 @@ def fetch_data(from_date, to_date):
             "to_date": to_date.strftime("%Y-%m-%d"),
             "msp": 0,
             "period": "date",
-            "group": 1,
-            "commodity": 99999,
-            "state": 99999,
-            "district": "",
-            "market": "",
+            "group": "[1]",
+            "commodity": "[99999]",
+            "state": "[99999]",
+            "district": "[]",
+            "market": "[]",
             "page": page,
             "options": 3,
             "limit": 1000
@@ -44,15 +49,20 @@ def fetch_data(from_date, to_date):
             "X-Requested-With": "XMLHttpRequest"
         }
 
-        res = requests.get(API_URL, params=params, headers=headers)
+        try:
+            res = requests.get(API_URL, params=params, headers=headers, timeout=30)
+        except requests.RequestException as exc:
+            raise FetchDataError(f"Failed to reach data source: {exc}") from exc
 
         if res.status_code != 200:
-            raise Exception("Failed to fetch data")
+            raise FetchDataError(
+                f"Failed to fetch data: status={res.status_code}, body={res.text[:300]}"
+            )
 
         try:
             data = res.json()
-        except Exception:
-            raise Exception("Invalid JSON response")
+        except ValueError as exc:
+            raise FetchDataError("Invalid JSON response from data source") from exc
 
         if "rows" not in data or not data["rows"]:
             break
