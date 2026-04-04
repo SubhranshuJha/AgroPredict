@@ -28,13 +28,17 @@ def save_historical_data(db: Session, df):
 
     db.commit()
 
-def save_prediction_data(db: Session, prediction: dict[str, float]):
-    today = date.today()
+def save_prediction_data(
+    db: Session,
+    prediction: dict[str, float],
+    prediction_date: date | None = None,
+):
+    target_date = prediction_date or date.today()
 
     for target_name, price in prediction.items():
         commodity = target_name.removesuffix("_Modal")
         existing = db.query(Prediction).filter(
-            Prediction.date == today,
+            Prediction.date == target_date,
             Prediction.commodity == commodity
         ).first()
 
@@ -42,7 +46,7 @@ def save_prediction_data(db: Session, prediction: dict[str, float]):
             existing.predicted_price = float(price)
         else:
             db.add(Prediction(
-                date=today,
+                date=target_date,
                 commodity=commodity,
                 predicted_price=float(price)
             ))

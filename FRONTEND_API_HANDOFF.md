@@ -33,7 +33,7 @@ Main endpoint for frontend consumption.
 This endpoint currently returns:
 
 - historical market data
-- prediction data if present in the database
+- prediction data from the database
 - a flag showing whether live data fetch succeeded
 
 ## Current Backend Behavior
@@ -49,6 +49,7 @@ If live fetch works:
 If live fetch fails:
 
 - backend falls back to cached database data
+- backend may generate predictions from cached historical DB data
 - response includes `"live_fetch": false`
 - frontend should still render available cached data
 
@@ -60,7 +61,7 @@ Because of that:
 
 - frontend must not assume live data is always available
 - frontend must support cached responses
-- frontend must handle empty `predictions`
+- frontend should still handle empty `predictions` safely
 
 ## Response Shape
 
@@ -138,7 +139,8 @@ Historical row shape:
 ### `predictions`
 
 - array of prediction rows from the database
-- may be empty
+- may still be empty in some failure/bootstrap cases
+- during prototype fallback, predictions may be generated from cached historical DB data when live fetch fails
 
 Prediction row shape:
 
@@ -168,7 +170,7 @@ Prediction row shape:
 ## Frontend Recommendations
 
 - Treat `/api/predict` as the single source for now.
-- Do not assume `predictions` is always non-empty.
+- Do not assume `predictions` is always non-empty, even though backend now tries to generate them from cached data during fallback.
 - Do not assume `live_fetch` is always `true`.
 - Render historical data even when predictions are empty.
 - Show a lightweight fallback banner when `live_fetch` is `false`.
@@ -196,6 +198,7 @@ Live market data is temporarily unavailable. Showing cached market data.
 - `success === true`
 - `live_fetch === false`
 - show fallback notice
+- predictions may still be present because backend can generate them from cached historical DB data
 
 ### Empty Predictions
 
@@ -233,6 +236,7 @@ if (!data.success) {
 - backend startup is working
 - cached historical data flow is working
 - prediction service itself has been tested successfully from CSV input
+- when live fetch fails, backend can attempt prediction generation from cached DB history in prototype mode
 - live external market source is unreliable at the moment
 - historical API output is currently limited to the latest 30 days
 
@@ -242,4 +246,3 @@ if (!data.success) {
 - [predict_route.py](/d:/AgroPredict/AgroPredict_Dev/AgroPredict/backend/app/routes/predict_route.py)
 - [predict_controller.py](/d:/AgroPredict/AgroPredict_Dev/AgroPredict/backend/app/controller/predict_controller.py)
 - [get_all_data.py](/d:/AgroPredict/AgroPredict_Dev/AgroPredict/backend/app/utils/get_all_data.py)
-
