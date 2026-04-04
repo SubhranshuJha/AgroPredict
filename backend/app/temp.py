@@ -25,11 +25,13 @@ headers = {
 }
 
 res = requests.get(url, params=params, headers=headers)
+print("Request URL:", res.url)
+print("Status Code:", res.status_code)
 
-data = res.json()
+# data = res.json()
 
-print("Status:", res.status_code)
-print(json.dumps(data, indent=2))
+# print("Status:", res.status_code)
+# print(json.dumps(data, indent=2))
 
 # import joblib
 
