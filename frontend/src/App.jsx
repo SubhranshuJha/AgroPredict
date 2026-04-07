@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import {Routes, Route} from 'react-router-dom'
 import { Home, Dashboard, Login, Register } from './Pages/index'
-import Navbar from './components/Navbar'
 import Nav from './Components/Nav'
 
 function App() {
