@@ -1,6 +1,9 @@
 import Card from "../Components/Card.jsx";
 import useTheme from "../contexts/theme.jsx"
 import response from '../response_1775565278673.json'
+// import icons from '../../public/icon2/icons.json'
+import icons from '../assets/icons.json'
+import iconMap from '../assets/iconsMap.json'
 
 function Home() {
 
@@ -26,6 +29,7 @@ function Home() {
   //       ],
   //   }
   const historicalData = response.historical.filter(commodity => commodity.date === "2026-03-28")
+  // const historicalData = response.historical.filter(commodity => commodity.date === "2026-03-28").sort((a,b)=>a.avg_price-b.avg_price)
   const predictedData = response.predictions
 
   return (
@@ -47,12 +51,20 @@ function Home() {
                 key={entity.commodity}
                 historicalData={entity}
                 predictedData={predictedData.find(item => item.commodity === entity.commodity)}
+                // icon={icons[entity.commodity] || '0'}
+                // icon={`/icons/${iconMap[entity.commodity]}`}
+                icon={`/icons/${iconMap[entity.commodity.trim()]}`}
               />
             ))
           }
             {/* <Card
+              historicalData={historicalData.find(item => item.commodity === 'Sweet Corn')}
+              predictedData={predictedData.find(item => item.commodity === 'Sweet Corn')}                // icon={icons[entity.commodity] || '0'}
+              /> */}
+            {/* <Card
               historicalData={historicalData.find(item => item.commodity === 'Wheat')}
               predictedData={predictedData.find(item => item.commodity === 'Wheat')}
+              icon={`/icons/${iconMap['Sweet Corn']}`}
             /> */}
           </div>
         </div>

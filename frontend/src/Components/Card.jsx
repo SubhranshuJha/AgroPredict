@@ -26,7 +26,7 @@
 //         <div className='border border-white/15 w-64 rounded-md h-84 bg-white/10 backdrop-blur-md p-2'>
 //             <div className='p-3 h-full'>
 
-//                 {/* <img
+//                 {/* <`img
 //                 src='logo.png'
 //                 alt="wheat logo"
 //                 className='h-6' /> */}
@@ -74,17 +74,24 @@
 
 import React from 'react'
 
-function Card({ historicalData, predictedData }) {
-    console.log("predicted:", predictedData);
+
+function Card({ historicalData, predictedData, icon }) {
+
     return (
-        <div className='w-72 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 p-4'>
+        <div className='rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 p-4'>
 
             {/* Header */}
             <div className='flex items-center gap-3 mb-4'>
                 <div className='flex items-center justify-center w-10 h-10 bg-white/10 rounded-xl'>
-                    🌾
+                    {/* 🌾 */}
+                    <img
+                        src={icon}
+                        alt="not"
+                        className='w-11/12 h-11/12 rounded-xl'
+                    />
+                    {/* {icon} */}
                 </div>
-                <p className='text-lg font-semibold'>{historicalData.commodity}</p>
+                <p className='text-lg  font-semibold '>{historicalData.commodity}</p>
             </div>
 
             {/* Main Price */}
