@@ -78,11 +78,11 @@ import React from 'react'
 function Card({ historicalData, predictedData, icon }) {
 
     return (
-        <div className='rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 p-4'>
+        <div className='rounded-2xl bg-white/70 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 p-4'>
 
             {/* Header */}
             <div className='flex items-center gap-3 mb-4'>
-                <div className='flex items-center justify-center w-10 h-10 bg-white/10 rounded-xl'>
+                <div className='flex items-center justify-center w-10 h-10 bg-gray-100 dark:bg-white/10 rounded-xl'>
                     {/* 🌾 */}
                     <img
                         src={icon}
@@ -91,41 +91,41 @@ function Card({ historicalData, predictedData, icon }) {
                     />
                     {/* {icon} */}
                 </div>
-                <p className='text-lg  font-semibold '>{historicalData.commodity}</p>
+                <p className='text-lg  font-semibold text-gray-800 dark:text-white '>{historicalData.commodity}</p>
             </div>
 
             {/* Main Price */}
             <div className='text-center mb-6'>
-                <h1 className='text-4xl font-bold'>
+                <h1 className='text-4xl font-bold text-gray-900 dark:text-white'>
                     ₹{Math.round(historicalData.avg_price)}
                 </h1>
-                <p className='text-sm text-white/60'>per Quintal</p>
+                <p className='text-sm text-gray-500 dark:text-white/60'>per Quintal</p>
             </div>
 
             {/* Stats */}
-            <div className='bg-white/5 rounded-xl p-4 space-y-2'>
+            <div className='bg-gray-50 dark:bg-white/5 rounded-xl p-4 space-y-2'>
 
-                <p className='text-center text-sm font-semibold text-white/80 mb-2'>
+                <p className='text-center text-sm font-semibold text-gray-700 dark:text-white/80 mb-2'>
                     Today's Stats
                 </p>
 
                 <div className='flex justify-between'>
-                    <span className='text-white/60'>Min</span>
-                    <span className='text-red-400'>
+                    <span className='text-gray-500 dark:text-white/60'>Min</span>
+                    <span className='text-red-500 dark:text-red-400 font-medium'>
                         ₹{Math.round(historicalData.min_price)}
                     </span>
                 </div>
 
                 <div className='flex justify-between'>
-                    <span className='text-white/60'>Max</span>
-                    <span className='text-green-400'>
+                    <span className='text-gray-500 dark:text-white/60'>Max</span>
+                    <span className='text-green-600 dark:text-green-400 font-medium'>
                         ₹{Math.round(historicalData.max_price)}
                     </span>
                 </div>
 
                 <div className='flex justify-between'>
-                    <span className='text-white/60'>Modal</span>
-                    <span className='text-blue-400'>
+                    <span className='text-gray-500 dark:text-white/60'>Modal</span>
+                    <span className='text-blue-600 dark:text-blue-400 font-medium'>
                         ₹{Math.round(historicalData.modal_price)}
                     </span>
                 </div>
@@ -133,7 +133,7 @@ function Card({ historicalData, predictedData, icon }) {
             </div>
 
             {/* Prediction */}
-            <div className='mt-4 text-center text-sm text-white/70'>
+            <div className='mt-4 text-center text-sm text-gray-600 dark:text-white/70'>
                 {/* Tomorrow's avg predicted price: ₹{ Math.round(predictedData.predicted_price) } */}
                 {predictedData ?
                     "Tomorrow's avg predicted price: ₹" + Math.round(predictedData.predicted_price)

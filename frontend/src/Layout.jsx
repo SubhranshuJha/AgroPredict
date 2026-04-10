@@ -9,7 +9,7 @@ function Layout() {
 
             <Navbar />
 
-            <main className='flex-grow'>
+            <main className='grow'>
                 <Outlet />
             </main>
 
