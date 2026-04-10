@@ -78,7 +78,7 @@ import React from 'react'
 function Card({ historicalData, predictedData, icon }) {
 
     return (
-        <div className='rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 p-4'>
+        <div className='rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 p-4'>
 
             {/* Header */}
             <div className='flex items-center gap-3 mb-4'>
