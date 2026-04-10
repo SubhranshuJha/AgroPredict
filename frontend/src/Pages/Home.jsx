@@ -1,5 +1,4 @@
 import Card from "../Components/Card.jsx";
-import useTheme from "../contexts/theme.jsx"
 import response from '../response_1775565278673.json'
 // import icons from '../../public/icon2/icons.json'
 import icons from '../assets/icons.json'
@@ -8,8 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import { Dashboard, Login, Register } from '../Pages'
 
 function Home() {
-
-  const { themeMode, toggleTheme } = useTheme();
+;
   <Routes className=''>
     <Route path='/' element={<Home />} />
     <Route path='/dashboard' element={<Dashboard />} />
@@ -42,12 +40,7 @@ function Home() {
   return (
     <div className="w-full min-h-screen">
       <div className="p-5 px-25 w-full min-h-11/12">
-        <button
-          className='bg-blue-400 mx-auto p-6 rounded-2xl'
-          onClick={toggleTheme}
-        >
-          toggle( {themeMode} )
-        </button>
+        
 
 
         <div className=" mt-2 p-5 min-h-screen rounded-3xl shadow shadow-taupe-600 ">
@@ -60,7 +53,7 @@ function Home() {
                 predictedData={predictedData.find(item => item.commodity === entity.commodity)}
                 // icon={icons[entity.commodity] || '0'}
                 // icon={`/icons/${iconMap[entity.commodity]}`}
-                icon={`/icons/${iconMap[entity.commodity.trim()]}.png`}
+                icon={`/Icons/${iconMap[entity.commodity.trim()]}.png`}
               />
             ))
           }
