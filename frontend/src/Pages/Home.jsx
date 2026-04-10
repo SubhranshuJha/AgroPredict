@@ -5,15 +5,13 @@ import icons from '../assets/icons.json'
 import iconMap from '../assets/map.json'
 import { Routes, Route } from "react-router-dom";
 import { Dashboard, Login, Register } from '../Pages'
+import { useFetchData } from "../contexts/Data.jsx";
 
 function Home() {
-;
-  <Routes className=''>
-    <Route path='/' element={<Home />} />
-    <Route path='/dashboard' element={<Dashboard />} />
-    <Route path='/login' element={<Login />} />
-    <Route path='/register' element={<Register />} />
-  </Routes>
+  const { data, loading, fetchData } = useFetchData();
+  console.log(" data: ",data);
+  console.log(" loading : ",loading);
+  // console.log(" fetchData : ",fetchData);
   // const response = {
   //       historical: [
   //           {
@@ -40,7 +38,7 @@ function Home() {
   return (
     <div className="w-full min-h-screen">
       <div className="p-5 px-25 w-full min-h-11/12">
-        
+
 
 
         <div className=" mt-2 p-5 min-h-screen rounded-3xl shadow shadow-taupe-600 ">
@@ -53,7 +51,7 @@ function Home() {
                 predictedData={predictedData.find(item => item.commodity === entity.commodity)}
                 // icon={icons[entity.commodity] || '0'}
                 // icon={`/icons/${iconMap[entity.commodity]}`}
-                icon={`/Icons/${iconMap[entity.commodity.trim()]}.png`}
+                icon={`/icons/${iconMap[entity.commodity.trim()]}.png`}
               />
             ))
           }
