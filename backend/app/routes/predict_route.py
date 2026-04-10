@@ -8,4 +8,4 @@ router = APIRouter()
 
 @router.get("/predict")
 def predict_route(db: Session = Depends(get_db)):
-    return predict_controller(db)
+    return predict_controller(db, days=7)

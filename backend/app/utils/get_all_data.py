@@ -4,7 +4,7 @@ from app.models.historical import HistoricalData
 from app.models.prediction import Prediction
 
 
-def get_all_data(db):
+def get_all_data(db, prediction_days=1):
     latest_row = db.query(HistoricalData).order_by(HistoricalData.date.desc()).first()
     if latest_row:
         cutoff_date = latest_row.date - timedelta(days=29)
@@ -23,11 +23,13 @@ def get_all_data(db):
         "modal_price": h.modal_price
     } for h in hist]
 
-    latest_pred_row = db.query(Prediction).order_by(Prediction.date.desc()).first()
-    if latest_pred_row:
+    if latest_row:
+        start_pred_date = latest_row.date + timedelta(days=1)
+        end_pred_date = latest_row.date + timedelta(days=prediction_days)
         preds = db.query(Prediction).filter(
-            Prediction.date == latest_pred_row.date
-        ).all()
+            Prediction.date >= start_pred_date,
+            Prediction.date <= end_pred_date
+        ).order_by(Prediction.date.asc(), Prediction.commodity.asc()).all()
     else:
         preds = []
 

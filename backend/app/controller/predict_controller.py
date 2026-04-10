@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.models.historical import HistoricalData
 from app.services.fetch_service import fetch_data, get_date_range, process_raw_data
-from app.services.prediction_service import predict_next_day
+from app.services.prediction_service import predict_next_days
 from app.utils.check_prediction import predictions_exist
 from app.utils.get_all_data import get_all_data
 from app.utils.save_data_to_db import save_historical_data, save_prediction_data
@@ -28,11 +28,18 @@ def _build_prediction_input_from_db(db: Session) -> tuple[pd.DataFrame, object] 
     return pd.DataFrame(records), latest_date
 
 
-def predict(db: Session):
+def _generate_predictions(db: Session, prediction_df: pd.DataFrame, latest_date, days: int) -> None:
+    future_predictions = predict_next_days(prediction_df, days=days)
+    for day_offset, prediction in enumerate(future_predictions, start=1):
+        save_prediction_data(db, prediction, prediction_date=latest_date + timedelta(days=day_offset))
+
+
+def predict(db: Session, days: int = 7):
     try:
+        days = max(1, days)
         latest_row = db.query(HistoricalData).order_by(HistoricalData.date.desc()).first()
         last_date = latest_row.date if latest_row else None
-        target_prediction_date = last_date + timedelta(days=1) if last_date is not None else None
+        target_prediction_date = last_date + timedelta(days=days) if last_date is not None else None
 
         if target_prediction_date is None or not predictions_exist(db, target_prediction_date):
             from_date, to_date = get_date_range(last_date)
@@ -44,10 +51,9 @@ def predict(db: Session):
 
             prediction_df, latest_date = _build_prediction_input_from_db(db)
             if prediction_df is not None and latest_date is not None:
-                prediction = predict_next_day(prediction_df)
-                save_prediction_data(db, prediction, prediction_date=latest_date + timedelta(days=1))
+                _generate_predictions(db, prediction_df, latest_date, days)
 
-        past_data, pred_data = get_all_data(db)
+        past_data, pred_data = get_all_data(db, prediction_days=days)
         return {
             "success": True,
             "live_fetch": True,
@@ -60,12 +66,11 @@ def predict(db: Session):
 
         if cached_df is not None and latest_date is not None:
             try:
-                prediction = predict_next_day(cached_df)
-                save_prediction_data(db, prediction, prediction_date=latest_date + timedelta(days=1))
+                _generate_predictions(db, cached_df, latest_date, days)
             except Exception:
                 pass
 
-        past_data, pred_data = get_all_data(db)
+        past_data, pred_data = get_all_data(db, prediction_days=days)
 
         if past_data or pred_data:
             return {
