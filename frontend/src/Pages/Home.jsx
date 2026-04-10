@@ -53,7 +53,7 @@ function Home() {
                 predictedData={predictedData.find(item => item.commodity === entity.commodity)}
                 // icon={icons[entity.commodity] || '0'}
                 // icon={`/icons/${iconMap[entity.commodity]}`}
-                icon={`/icons/${iconMap[entity.commodity.trim()]}`}
+                icon={`/Icons/${iconMap[entity.commodity.trim()]}`}
               />
             ))
           }
