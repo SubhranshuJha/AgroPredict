@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import axios from 'axios';
 
 export const DataContext = createContext(null);
@@ -9,22 +9,19 @@ const DataProvider = ({ children }) => {
 
 
     const backEndUrl = import.meta.env.VITE_BACKEND_URL;
-    console.log(backEndUrl);
     // const API_URL = `${backEndUrl}/`;
     const API_URL = `${backEndUrl}/api/predict`;
     // 2 routes
     // GET /
     // GET /api/predict
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             setLoading(true);
-            console.log("started loading");
             const response = await axios.get(API_URL)
-
-            if (response?.success) {
-                setData(response)
+            if (response.data?.success) {
+                setData(response.data)
             } else {
-                console.error("data not available from backend");
+                console.error("ERROR :: data not available from backend");
                 setData(null);
             }
         } catch (error) {
@@ -33,8 +30,13 @@ const DataProvider = ({ children }) => {
         } finally {
             setLoading(false)
         }
-    }
-    fetchData();
+    }, [API_URL])
+
+    // fetchData();
+    useEffect(() => {
+        fetchData();
+    }, [fetchData])
+
     return (
         <DataContext.Provider
             value={{

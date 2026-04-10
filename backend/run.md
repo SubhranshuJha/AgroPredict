@@ -62,8 +62,9 @@ pip install -r requirements.txt
 ---
 
 ## ▶️ Run the Backend Server
-
+after one initialization run only these two command on backend folder
 ```bash
+venv\Scripts\activate
 uvicorn app.main:app --reload
 ```
 
