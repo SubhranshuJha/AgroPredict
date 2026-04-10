@@ -1,8 +1,7 @@
 from pathlib import Path
-
 import joblib
 import numpy as np
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model #type = ignore
 from app.services.preprocess_service import create_wide_dataframe
 
 ML_DIR = Path(__file__).resolve().parents[1] / "ml"

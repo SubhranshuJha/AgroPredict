@@ -26,7 +26,6 @@ def fetch_data(from_date, to_date):
         return pd.DataFrame()
 
     all_data = []
-    url = API_URL
 
     payload = {
         "type": 2,
@@ -50,13 +49,18 @@ def fetch_data(from_date, to_date):
         "Content-Type": "application/json"
     }
 
-    while url:
+    while True:
         try:
-            res = requests.post(url, json=payload, headers=headers, timeout=30)
+            res = requests.post(API_URL, json=payload, headers=headers, timeout=30)
         except requests.RequestException as exc:
             raise FetchDataError(f"Request failed: {exc}") from exc
 
         if res.status_code != 200:
+            # Agmarknet occasionally returns a 500 on follow-up pages with
+            # "strptime() argument 1 must be str, not None". If we already
+            # collected rows, keep partial data instead of failing hard.
+            if all_data and res.status_code == 500 and "strptime() argument 1 must be str, not None" in res.text:
+                break
             raise FetchDataError(f"Error {res.status_code}: {res.text[:200]}")
 
         try:
@@ -69,8 +73,12 @@ def fetch_data(from_date, to_date):
             break
 
         all_data.extend(rows)
-        url = data.get("pagination", {}).get("next_page")
-        payload = None
+
+        # Keep sending full filter payload on each page; switching payload to
+        # None can cause server-side date parsing errors.
+        if not data.get("pagination", {}).get("next_page"):
+            break
+        payload["page"] += 1
 
     return pd.DataFrame(all_data)
 
