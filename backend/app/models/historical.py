@@ -7,7 +7,7 @@ class HistoricalData(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    date = Column(Date, nullable=False)
+    date = Column(Date, nullable=False) 
     commodity = Column(String, nullable=False)
 
     avg_price = Column(Float, nullable=True)

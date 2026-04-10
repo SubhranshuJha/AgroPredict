@@ -12,11 +12,19 @@ from app.utils.save_data_to_db import save_historical_data, save_prediction_data
 
 
 def _build_prediction_input_from_db(db: Session) -> tuple[pd.DataFrame, object] | tuple[None, None]:
-    rows = db.query(HistoricalData).order_by(HistoricalData.date.asc()).all()
+    latest_row = db.query(HistoricalData).order_by(HistoricalData.date.desc()).first()
+    if not latest_row:
+        return None, None
+
+    latest_date = latest_row.date
+    cutoff_date = latest_date - timedelta(days=120)
+
+    rows = db.query(HistoricalData).filter(
+        HistoricalData.date >= cutoff_date
+    ).order_by(HistoricalData.date.asc()).all()
     if not rows:
         return None, None
 
-    latest_date = rows[-1].date
     records = [{
         "Date": row.date,
         "Commodity": row.commodity,

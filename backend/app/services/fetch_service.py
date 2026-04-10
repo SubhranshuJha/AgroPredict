@@ -4,6 +4,8 @@ import pandas as pd
 import requests
 
 API_URL = "https://api.agmarknet.gov.in/v1/all-type-report/all-type-report-agm"
+MAX_FETCH_PAGES = 100
+MAX_FETCH_SECONDS = 90
 
 
 class FetchDataError(Exception):
@@ -26,6 +28,7 @@ def fetch_data(from_date, to_date):
         return pd.DataFrame()
 
     all_data = []
+    start_time = datetime.now()
 
     payload = {
         "type": 2,
@@ -50,6 +53,11 @@ def fetch_data(from_date, to_date):
     }
 
     while True:
+        if payload["page"] > MAX_FETCH_PAGES:
+            raise FetchDataError(f"Fetch aborted after {MAX_FETCH_PAGES} pages")
+        if (datetime.now() - start_time).total_seconds() > MAX_FETCH_SECONDS:
+            raise FetchDataError(f"Fetch timed out after {MAX_FETCH_SECONDS} seconds")
+
         try:
             res = requests.post(API_URL, json=payload, headers=headers, timeout=30)
         except requests.RequestException as exc:
