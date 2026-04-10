@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -47,9 +47,10 @@ def predict(db: Session, days: int = 7):
         days = max(1, days)
         latest_row = db.query(HistoricalData).order_by(HistoricalData.date.desc()).first()
         last_date = latest_row.date if latest_row else None
-        target_prediction_date = last_date + timedelta(days=days) if last_date is not None else None
+        today = datetime.today().date()
 
-        if target_prediction_date is None or not predictions_exist(db, target_prediction_date):
+        # If DB is stale (or empty), fetch missing history up to today first.
+        if last_date is None or last_date < today:
             from_date, to_date = get_date_range(last_date)
             raw_df = fetch_data(from_date, to_date)
             df = process_raw_data(raw_df)
@@ -57,6 +58,12 @@ def predict(db: Session, days: int = 7):
             if not df.empty:
                 save_historical_data(db, df)
 
+            latest_row = db.query(HistoricalData).order_by(HistoricalData.date.desc()).first()
+            last_date = latest_row.date if latest_row else None
+
+        # Generate predictions for the latest available historical date only.
+        target_prediction_date = last_date + timedelta(days=days) if last_date is not None else None
+        if target_prediction_date is None or not predictions_exist(db, target_prediction_date):
             prediction_df, latest_date = _build_prediction_input_from_db(db)
             if prediction_df is not None and latest_date is not None:
                 _generate_predictions(db, prediction_df, latest_date, days)
