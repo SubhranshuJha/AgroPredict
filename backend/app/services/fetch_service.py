@@ -54,20 +54,29 @@ def fetch_data(from_date, to_date):
 
     while True:
         if payload["page"] > MAX_FETCH_PAGES:
+            if all_data:
+                break
             raise FetchDataError(f"Fetch aborted after {MAX_FETCH_PAGES} pages")
         if (datetime.now() - start_time).total_seconds() > MAX_FETCH_SECONDS:
+            if all_data:
+                break
             raise FetchDataError(f"Fetch timed out after {MAX_FETCH_SECONDS} seconds")
 
         try:
             res = requests.post(API_URL, json=payload, headers=headers, timeout=30)
         except requests.RequestException as exc:
+            if all_data:
+                break
             raise FetchDataError(f"Request failed: {exc}") from exc
 
         if res.status_code != 200:
+            if res.status_code == 404 and "No data available for the selected date range" in res.text:
+                return pd.DataFrame()
+
             # Agmarknet occasionally returns a 500 on follow-up pages with
             # "strptime() argument 1 must be str, not None". If we already
             # collected rows, keep partial data instead of failing hard.
-            if all_data and res.status_code == 500 and "strptime() argument 1 must be str, not None" in res.text:
+            if all_data:
                 break
             raise FetchDataError(f"Error {res.status_code}: {res.text[:200]}")
 
