@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import requests
 
-API_URL = "https://api.agmarknet.gov.in/v1/all-type-report/all-type-report"
+API_URL = "https://api.agmarknet.gov.in/v1/all-type-report/all-type-report-agm"
 
 
 class FetchDataError(Exception):
@@ -22,53 +22,55 @@ def get_date_range(last_date):
 
 
 def fetch_data(from_date, to_date):
+    if from_date > to_date:
+        return pd.DataFrame()
+
     all_data = []
-    page = 1
+    url = API_URL
 
-    while True:
-        params = {
-            "type": 2,
-            "from_date": from_date.strftime("%Y-%m-%d"),
-            "to_date": to_date.strftime("%Y-%m-%d"),
-            "msp": 0,
-            "period": "date",
-            "group": "[1]",
-            "commodity": "[99999]",
-            "state": "[99999]",
-            "district": "[]",
-            "market": "[]",
-            "page": page,
-            "options": 3,
-            "limit": 1000
-        }
+    payload = {
+        "type": 2,
+        "from_date": from_date.strftime("%Y-%m-%d"),
+        "to_date": to_date.strftime("%Y-%m-%d"),
+        "msp": 0,
+        "period": "date",
+        "group": "[1]",
+        "commodity": "[99999]",
+        "state": "[99999]",
+        "district": "[]",
+        "market": "[]",
+        "page": 1,
+        "options": 3,
+        "limit": 1000
+    }
 
-        headers = {
-            "User-Agent": "Mozilla/5.0",
-            "Referer": "https://agmarknet.gov.in/",
-            "Accept": "application/json, text/plain, */*",
-            "X-Requested-With": "XMLHttpRequest"
-        }
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Referer": "https://agmarknet.gov.in/",
+        "Content-Type": "application/json"
+    }
 
+    while url:
         try:
-            res = requests.get(API_URL, params=params, headers=headers, timeout=30)
+            res = requests.post(url, json=payload, headers=headers, timeout=30)
         except requests.RequestException as exc:
-            raise FetchDataError(f"Failed to reach data source: {exc}") from exc
+            raise FetchDataError(f"Request failed: {exc}") from exc
 
         if res.status_code != 200:
-            raise FetchDataError(
-                f"Failed to fetch data: status={res.status_code}, body={res.text[:300]}"
-            )
+            raise FetchDataError(f"Error {res.status_code}: {res.text[:200]}")
 
         try:
             data = res.json()
         except ValueError as exc:
-            raise FetchDataError("Invalid JSON response from data source") from exc
+            raise FetchDataError(f"Invalid JSON response: {exc}") from exc
 
-        if "rows" not in data or not data["rows"]:
+        rows = data.get("rows", [])
+        if not rows:
             break
 
-        all_data.extend(data["rows"])
-        page += 1
+        all_data.extend(rows)
+        url = data.get("pagination", {}).get("next_page")
+        payload = None
 
     return pd.DataFrame(all_data)
 
@@ -91,7 +93,7 @@ def process_raw_data(df):
     })
 
     # Convert date
-    df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%Y")
+    df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%Y", errors="coerce")
 
     # Convert numeric
     for col in ["Min_Price", "Max_Price", "Modal_Price"]:

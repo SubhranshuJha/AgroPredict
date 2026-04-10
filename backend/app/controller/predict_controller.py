@@ -30,15 +30,22 @@ def _build_prediction_input_from_db(db: Session) -> tuple[pd.DataFrame, object] 
 
 def predict(db: Session):
     try:
-        if not predictions_exist(db):
-            from_date, to_date = get_date_range(None)
+        latest_row = db.query(HistoricalData).order_by(HistoricalData.date.desc()).first()
+        last_date = latest_row.date if latest_row else None
+        target_prediction_date = last_date + timedelta(days=1) if last_date is not None else None
+
+        if target_prediction_date is None or not predictions_exist(db, target_prediction_date):
+            from_date, to_date = get_date_range(last_date)
             raw_df = fetch_data(from_date, to_date)
             df = process_raw_data(raw_df)
 
             if not df.empty:
                 save_historical_data(db, df)
-                prediction = predict_next_day(df)
-                save_prediction_data(db, prediction)
+
+            prediction_df, latest_date = _build_prediction_input_from_db(db)
+            if prediction_df is not None and latest_date is not None:
+                prediction = predict_next_day(prediction_df)
+                save_prediction_data(db, prediction, prediction_date=latest_date + timedelta(days=1))
 
         past_data, pred_data = get_all_data(db)
         return {

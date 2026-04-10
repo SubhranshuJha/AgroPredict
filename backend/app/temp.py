@@ -1,17 +1,18 @@
 import requests
 import json
 
-url = "https://api.agmarknet.gov.in/v1/all-type-report/all-type-report"
+
+url = "https://api.agmarknet.gov.in/v1/all-type-report/all-type-report-agm"
 
 params = {
     "type": 2,
-    "from_date": "2026-03-27",
-    "to_date": "2026-03-27",
+    "from_date": "2026-04-01",
+    "to_date": "2026-04-07",
     "msp": 0,
     "period": "date",
     "group": "[1]",
     "commodity": "[99999]",
-    "state": "[99999]",   
+    "state": "[99999]",
     "district": "[]",
     "market": "[]",
     "page": 1,
@@ -21,23 +22,13 @@ params = {
 
 headers = {
     "User-Agent": "Mozilla/5.0",
-    "Referer": "https://agmarknet.gov.in/"
+    "Referer": "https://agmarknet.gov.in/",
+    "Content-Type": "application/json"
 }
 
-res = requests.get(url, params=params, headers=headers)
-print("Request URL:", res.url)
+res = requests.post(url, json=params, headers=headers)
+
 print("Status Code:", res.status_code)
-
-# data = res.json()
-
-# print("Status:", res.status_code)
-# print(json.dumps(data, indent=2))
-
-# import joblib
-
-# cols = joblib.load(r"D:\AgroPredict\AgroPredict_Dev\AgroPredict\backend\app\ml\columns.pkl")
-# print(type(cols))
-# print(list(cols.keys())[:20])
-
-# print(len(cols["feature_cols"]))
-# print(cols["feature_cols"][:20])
+print(res.text)  # or res.json()
+formatted_data = res.json()
+print(json.dumps(formatted_data, indent=4))

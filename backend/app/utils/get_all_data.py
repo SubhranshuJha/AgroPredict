@@ -3,6 +3,7 @@ from datetime import timedelta
 from app.models.historical import HistoricalData
 from app.models.prediction import Prediction
 
+
 def get_all_data(db):
     latest_row = db.query(HistoricalData).order_by(HistoricalData.date.desc()).first()
     if latest_row:
@@ -22,8 +23,13 @@ def get_all_data(db):
         "modal_price": h.modal_price
     } for h in hist]
 
-    # 🔹 Predictions
-    preds = db.query(Prediction).all()
+    latest_pred_row = db.query(Prediction).order_by(Prediction.date.desc()).first()
+    if latest_pred_row:
+        preds = db.query(Prediction).filter(
+            Prediction.date == latest_pred_row.date
+        ).all()
+    else:
+        preds = []
 
     pred_data = [{
         "date": p.date,
