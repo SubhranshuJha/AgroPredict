@@ -3,12 +3,19 @@ import useTheme from "../contexts/theme.jsx"
 import response from '../response_1775565278673.json'
 // import icons from '../../public/icon2/icons.json'
 import icons from '../assets/icons.json'
-import iconMap from '../assets/iconsMap.json'
+import iconMap from '../assets/map.json'
+import { Routes, Route } from "react-router-dom";
+import { Dashboard, Login, Register } from '../Pages'
 
 function Home() {
 
   const { themeMode, toggleTheme } = useTheme();
-
+  <Routes className=''>
+    <Route path='/' element={<Home />} />
+    <Route path='/dashboard' element={<Dashboard />} />
+    <Route path='/login' element={<Login />} />
+    <Route path='/register' element={<Register />} />
+  </Routes>
   // const response = {
   //       historical: [
   //           {
@@ -53,7 +60,7 @@ function Home() {
                 predictedData={predictedData.find(item => item.commodity === entity.commodity)}
                 // icon={icons[entity.commodity] || '0'}
                 // icon={`/icons/${iconMap[entity.commodity]}`}
-                icon={`/icons/${iconMap[entity.commodity.trim()]}`}
+                icon={`/icons/${iconMap[entity.commodity.trim()]}.png`}
               />
             ))
           }
