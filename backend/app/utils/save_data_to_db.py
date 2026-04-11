@@ -1,5 +1,6 @@
 from datetime import date
 
+import pandas as pd
 from sqlalchemy.orm import Session
 
 from app.models.historical import HistoricalData
@@ -19,17 +20,59 @@ def save_historical_data(db: Session, df):
     if not records:
         return
 
+    # Normalize key fields so comparisons match DB types exactly.
+    cleaned_records = []
+    for row in records:
+        row_date = row.get("date")
+        if isinstance(row_date, pd.Timestamp):
+            row["date"] = row_date.date()
+        elif hasattr(row_date, "to_pydatetime"):
+            row["date"] = row_date.to_pydatetime().date()
+
+        commodity = row.get("commodity")
+        if isinstance(commodity, str):
+            row["commodity"] = commodity.strip()
+
+        cleaned_records.append(row)
+    records = cleaned_records
+
     # Query existing rows once for the incoming window to avoid N queries.
     min_date = min(row["date"] for row in records)
     max_date = max(row["date"] for row in records)
-    incoming_commodities = {row["commodity"] for row in records}
+    incoming_dates = {row["date"] for row in records}
+    incoming_by_date = {}
+    for row in records:
+        incoming_by_date.setdefault(row["date"], set()).add(row["commodity"])
 
     existing_rows = db.query(HistoricalData).filter(
         HistoricalData.date >= min_date,
         HistoricalData.date <= max_date,
-        HistoricalData.commodity.in_(incoming_commodities)
     ).all()
-    existing_map = {(r.date, r.commodity): r for r in existing_rows}
+    # If duplicates already exist in DB for same (date, commodity), keep one and delete others.
+    existing_map = {}
+    duplicates_to_delete = []
+    for r in existing_rows:
+        key = (r.date, (r.commodity or "").strip())
+        if key in existing_map:
+            keep = existing_map[key]
+            if r.id > keep.id:
+                duplicates_to_delete.append(keep)
+                existing_map[key] = r
+            else:
+                duplicates_to_delete.append(r)
+        else:
+            existing_map[key] = r
+
+    for dup in duplicates_to_delete:
+        db.delete(dup)
+
+    # Reconcile snapshots: for each fetched date, remove stale commodities
+    # that are no longer present in the latest source response for that date.
+    for key, existing in list(existing_map.items()):
+        row_date, row_commodity = key
+        if row_date in incoming_dates and row_commodity not in incoming_by_date[row_date]:
+            db.delete(existing)
+            existing_map.pop(key, None)
 
     for row in records:
         key = (row["date"], row["commodity"])
