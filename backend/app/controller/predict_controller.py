@@ -49,9 +49,13 @@ def predict(db: Session, days: int = 7):
         last_date = latest_row.date if latest_row else None
         today = datetime.today().date()
 
-        # If DB is stale (or empty), fetch missing history up to today first.
-        if last_date is None or last_date < today:
-            from_date, to_date = get_date_range(last_date)
+        # Refresh history when DB is stale, and also refresh today's rows
+        # because the upstream market feed can publish late updates.
+        if last_date is None or last_date <= today:
+            if last_date == today:
+                from_date, to_date = today, today
+            else:
+                from_date, to_date = get_date_range(last_date)
             raw_df = fetch_data(from_date, to_date)
             df = process_raw_data(raw_df)
 

@@ -52,6 +52,10 @@ def fetch_data(from_date, to_date):
         "Content-Type": "application/json"
     }
 
+    session = requests.Session()
+    # Avoid broken machine-level proxy settings causing stale cached responses.
+    session.trust_env = False
+
     while True:
         if payload["page"] > MAX_FETCH_PAGES:
             if all_data:
@@ -63,7 +67,7 @@ def fetch_data(from_date, to_date):
             raise FetchDataError(f"Fetch timed out after {MAX_FETCH_SECONDS} seconds")
 
         try:
-            res = requests.post(API_URL, json=payload, headers=headers, timeout=30)
+            res = session.post(API_URL, json=payload, headers=headers, timeout=30)
         except requests.RequestException as exc:
             if all_data:
                 break
