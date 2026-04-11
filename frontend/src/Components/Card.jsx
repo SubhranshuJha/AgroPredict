@@ -1,84 +1,38 @@
-// import React from 'react'
-
-// function Card() {
-
-//     const response = {
-//         "historical": [
-//             {
-//                 "date": "2026-03-28",
-//                 "commodity": "Wheat",
-//                 "avg_price": 2447.805,
-//                 "min_price": 2178.79,
-//                 "max_price": 2716.82,
-//                 "modal_price": 2441.66
-//             }
-//         ],
-//         "predictions": [
-//             {
-//                 "date": "2026-03-29",
-//                 "commodity": "Wheat",
-//                 "predicted_price": 2450.64
-//             }
-//         ],
-//     }
-
-//     return (
-//         <div className='border border-white/15 w-64 rounded-md h-84 bg-white/10 backdrop-blur-md p-2'>
-//             <div className='p-3 h-full'>
-
-//                 {/* <`img
-//                 src='logo.png'
-//                 alt="wheat logo"
-//                 className='h-6' /> */}
-//                 <div className='flex gap-3 border mb-5'>
-//                     <svg
-//                         xmlns="http://www.w3.org/2000/svg"
-//                         fill="none"
-//                         viewBox="0 0 24 24"
-//                         strokeWidth={1.5}
-//                         stroke="currentColor"
-//                         className="w-6 h-6"
-//                     >
-//                         <path
-//                             strokeLinecap="round"
-//                             strokeLinejoin="round"
-//                             d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-//                         />
-//                     </svg>
-//                     {/* Commodity Name: */}
-//                     <p>{response.historical[0].commodity}</p>
-
-//                 </div>
-//                 <div className='border p-2 font-semibold text-3xl rounded-2xl'>
-//                     {Math.round(response.historical[0].avg_price)}
-
-//                     <p className='font-light text-sm text-white/20'>Rs/Quintal</p>
-//                 </div>
-//                 <div className='border mt-5 p-5 text-md text-white/75 rounded-2xl'>
-//                     <p className='text-center font-semibold text-lg text-white'>Today's stats</p>
-//                     <hr />
-//                     <p>min price: {response.historical[0].min_price }</p>
-//                     <p>max price: {response.historical[0].max_price } </p>
-//                     <p>modal price: { response.historical[0].modal_price} </p>
-//                 </div>
-//             </div>
-
-
-
-//         </div>
-//     )
-// }
-
-// export default Card
-
-
-import React from 'react'
+import React, { useMemo } from 'react'
 
 
 function Card({ historicalData, predictedData, icon }) {
+    let isDataAvailable = false;
+    if (predictedData?.length !== 0) {
+        isDataAvailable = true
+    }
+    
+    const { formattedFutureDates, formattedPredictedData } = useMemo(() => {
+        const today = new Date();
+        const predictionDates = [];
+        const formattedFutureDates = []
+        const formattedPredictedData = []
+
+        for (let i = 1; i <= 3; i++) {
+            const futureDate = new Date(today);
+            futureDate.setDate(today.getDate() + i);
+
+            predictionDates.push(
+                futureDate.toLocaleDateString('en-CA') // YYYY-MM-DD format
+            );
+            formattedFutureDates.push(
+                futureDate.toLocaleDateString('en-GB')
+            )
+            formattedPredictedData.push(
+                predictedData?.find(data => data.date === predictionDates[i - 1])
+            )
+        }
+        return { formattedFutureDates, formattedPredictedData }
+    }, [predictedData])
+
 
     return (
-        <div className='rounded-2xl bg-white/70 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 p-4'>
+        <div className='rounded-2xl bg-white/70 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 p-4 flex flex-col justify-between h-full'>
 
             {/* Header */}
             <div className='flex items-center gap-3 mb-4'>
@@ -102,44 +56,85 @@ function Card({ historicalData, predictedData, icon }) {
                 <p className='text-sm text-gray-500 dark:text-white/60'>per Quintal</p>
             </div>
 
-            {/* Stats */}
-            <div className='bg-gray-50 dark:bg-white/5 rounded-xl p-4 space-y-2'>
+            <div className='h-full flex flex-col gap-2'>
+                {/* Stats */}
+                <div className='flex-1 bg-gray-50 dark:bg-white/5 rounded-xl p-4 space-y-2'>
 
-                <p className='text-center text-sm font-semibold text-gray-700 dark:text-white/80 mb-2'>
-                    Today's Stats
-                </p>
+                    <p className='text-center text-sm font-semibold text-gray-700 dark:text-white/80 mb-2'>
+                        Today's Stats
+                    </p>
 
-                <div className='flex justify-between'>
-                    <span className='text-gray-500 dark:text-white/60'>Min</span>
-                    <span className='text-red-500 dark:text-red-400 font-medium'>
-                        ₹{Math.round(historicalData.min_price)}
-                    </span>
+                    <div className='flex justify-between'>
+                        <span className='text-gray-500 dark:text-white/60'>Min</span>
+                        <span className='text-red-500 dark:text-red-400 font-medium'>
+                            ₹{Math.round(historicalData.min_price)}
+                        </span>
+                    </div>
+
+                    <div className='flex justify-between'>
+                        <span className='text-gray-500 dark:text-white/60'>Max</span>
+                        <span className='text-green-600 dark:text-green-400 font-medium'>
+                            ₹{Math.round(historicalData.max_price)}
+                        </span>
+                    </div>
+
+                    <div className='flex justify-between'>
+                        <span className='text-gray-500 dark:text-white/60'>Modal</span>
+                        <span className='text-blue-600 dark:text-blue-400 font-medium'>
+                            ₹{Math.round(historicalData.modal_price)}
+                        </span>
+                    </div>
+
                 </div>
 
-                <div className='flex justify-between'>
-                    <span className='text-gray-500 dark:text-white/60'>Max</span>
-                    <span className='text-green-600 dark:text-green-400 font-medium'>
-                        ₹{Math.round(historicalData.max_price)}
-                    </span>
-                </div>
-
-                <div className='flex justify-between'>
-                    <span className='text-gray-500 dark:text-white/60'>Modal</span>
-                    <span className='text-blue-600 dark:text-blue-400 font-medium'>
-                        ₹{Math.round(historicalData.modal_price)}
-                    </span>
-                </div>
-
-            </div>
-
-            {/* Prediction */}
-            <div className='mt-4 text-center text-sm text-gray-600 dark:text-white/70'>
-                {/* Tomorrow's avg predicted price: ₹{ Math.round(predictedData.predicted_price) } */}
+                {/* Prediction */}
+                {/* <div className='mt-4 text-center text-sm text-gray-600 dark:text-white/70'>
                 {predictedData ?
                     "Tomorrow's avg predicted price: ₹" + Math.round(predictedData.predicted_price)
                     :
                     'Prediction Not available'
                 }
+            </div> */}
+                <div className='flex-1 bg-gray-50 dark:bg-white/5 rounded-xl p-4 space-y-2 text-gray-500 dark:text-white/60 mt-4'>
+
+                    {isDataAvailable ? (
+                        <>
+                            <p className='text-center text-sm font-semibold text-gray-700 dark:text-white/80 mb-2'>
+                                Future's predicted Stats
+                            </p>
+                            <hr />
+
+                            <div className='flex justify-between'>
+                                <span>{formattedFutureDates[0]}</span>
+                                <span className='text-red-500 dark:text-red-400 font-medium'>
+                                    ₹{Math.round(formattedPredictedData[0]?.predicted_price)}
+                                </span>
+                            </div>
+
+                            <div className='flex justify-between'>
+                                <span >{formattedFutureDates[1]}</span>
+                                <span className='text-green-600 dark:text-green-400 font-medium'>
+                                    ₹{Math.round(formattedPredictedData[1]?.predicted_price)}
+
+                                </span>
+                            </div>
+
+                            <div className='flex justify-between'>
+                                <span>{formattedFutureDates[2]}</span>
+                                <span className='text-blue-600 dark:text-blue-400 font-medium'>
+                                    ₹{Math.round(formattedPredictedData[2]?.predicted_price)}
+
+                                </span>
+                            </div>
+                        </>)
+                        :
+                        <div className='h-full flex items-center justify-center'>
+                            <p className='text-2xl text-center text-gray-900/60 font-semibold dark:text-amber-400'>Predictions NOT available!!</p>
+                        </div>
+                    }
+
+
+                </div>
             </div>
 
         </div>
