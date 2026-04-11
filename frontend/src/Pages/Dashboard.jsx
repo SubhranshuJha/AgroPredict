@@ -1,9 +1,10 @@
 import React from 'react'
+import HeatMap from '../Components/HeatMap'
 
 function Dashboard() {
   return (
     <div>
-      <h1>Dashboard</h1>
+      <HeatMap />
     </div>
   )
 }
