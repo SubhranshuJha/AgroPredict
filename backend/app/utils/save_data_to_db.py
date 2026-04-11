@@ -19,23 +19,29 @@ def save_historical_data(db: Session, df):
     if not records:
         return
 
-    # Query existing keys once for the incoming window to avoid N queries.
+    # Query existing rows once for the incoming window to avoid N queries.
     min_date = min(row["date"] for row in records)
     max_date = max(row["date"] for row in records)
     incoming_commodities = {row["commodity"] for row in records}
 
-    existing_rows = db.query(HistoricalData.date, HistoricalData.commodity).filter(
+    existing_rows = db.query(HistoricalData).filter(
         HistoricalData.date >= min_date,
         HistoricalData.date <= max_date,
         HistoricalData.commodity.in_(incoming_commodities)
     ).all()
-    existing_keys = {(r.date, r.commodity) for r in existing_rows}
+    existing_map = {(r.date, r.commodity): r for r in existing_rows}
 
     for row in records:
         key = (row["date"], row["commodity"])
-        if key not in existing_keys:
+        existing = existing_map.get(key)
+        if existing is None:
             db.add(HistoricalData(**row))
-            existing_keys.add(key)
+        else:
+            # Keep same-day commodities fresh when source prices are revised.
+            existing.avg_price = row["avg_price"]
+            existing.min_price = row["min_price"]
+            existing.max_price = row["max_price"]
+            existing.modal_price = row["modal_price"]
 
     db.commit()
 
