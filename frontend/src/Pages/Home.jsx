@@ -1,10 +1,5 @@
 import Card from "../Components/Card.jsx";
-import response from '../response_1775565278673.json'
-// import icons from '../../public/icon2/icons.json'
-import icons from '../assets/icons.json'
 import iconMap from '../assets/map.json'
-import { Routes, Route } from "react-router-dom";
-import { Dashboard, Login, Register } from '../Pages'
 import { useFetchData } from "../contexts/Data.jsx";
 import { useEffect, useState, useMemo } from "react";
 
@@ -14,11 +9,9 @@ function Home() {
   const filterOptions = ["predictionAvailable", "predictionUnavailable"]
   const [sortBy, setSortBy] = useState("lowestAvgPrice")
   const [filterBy, setFilterBy] = useState(null);
-  // or default:
-  // useState("predictionAvailable")
-  // let sortBy = "lowestAvgPrice"
-  // const historicalData = response.historical.filter(commodity => commodity.date === "2026-03-28").sort((a,b)=>a.avg_price-b.avg_price)
+
   const todayDate = new Date().toLocaleDateString('en-CA')
+
 
   const historicalData = data?.historical?.filter(commodity => commodity.date === todayDate) || []
   const predictedData = data?.predictions || []
@@ -131,22 +124,3 @@ function Home() {
 }
 
 export default Home
-
-
-
-
-/***
-  <select
-          className="rounded-lg px-1 py-1 bg-gray-100 cursor-pointer outline-none"
-          value={selectCurrency}
-          onChange={(e) => onCurrencyChange && onCurrencyChange(e.target.value)}
-          disabled={currencyDisable}
-        >
-          {currencyOptions.map((currency) => (
-            // should use key when looping in react same component
-            <option key={currency} value={currency}>
-              {currency}
-            </option>
-          ))}
-        </select>
- */
