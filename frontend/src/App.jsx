@@ -3,6 +3,7 @@ import './App.css'
 import { Routes, Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'
 import { Home, Dashboard, Login, Register, CommodityInfo } from './Pages'
 import Layout from './Layout'
+import GlobalLoader from './Components/GlobalLoader'
 
 function App() {
 
@@ -31,7 +32,7 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
       </Routes> */}
-
+      <GlobalLoader />
       <RouterProvider router={router} />
 
     </div>

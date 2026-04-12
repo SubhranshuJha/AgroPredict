@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useState, useRef } from 'react'
 import axios from 'axios';
 
 export const DataContext = createContext(null);
@@ -17,24 +17,32 @@ const DataProvider = ({ children }) => {
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
+            const startTime = performance.now()
             const response = await axios.get(API_URL)
             if (response.data?.success) {
                 setData(response.data)
+                const endTime = performance.now()
+                console.log("total Time:", (endTime - startTime) / 1000, "s");
             } else {
                 console.error("ERROR :: data not available from backend");
                 setData(null);
             }
         } catch (error) {
-            console.error("Data fetching error");
+            console.error("Data fetching error:", error);
             setData(null);
         } finally {
             setLoading(false)
         }
-    }, [API_URL])
+    }, [])
+    const hasFetched = useRef(false);
 
-    // fetchData();
+    
     useEffect(() => {
-        fetchData();
+        // fetchData();
+        if (!hasFetched.current) {
+            fetchData();
+            hasFetched.current = true;
+        }
     }, [fetchData])
 
     return (
