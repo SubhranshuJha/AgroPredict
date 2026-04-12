@@ -36,7 +36,7 @@ const DataProvider = ({ children }) => {
     }, [])
     const hasFetched = useRef(false);
 
-    
+
     useEffect(() => {
         // fetchData();
         if (!hasFetched.current) {

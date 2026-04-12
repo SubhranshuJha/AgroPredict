@@ -1,9 +1,11 @@
-import response from '../response_1775565278673.json';
+import { useFetchData } from '../contexts/Data';
+
 
 const HeatMap = () => {
-  const data = response.historical;
-  const dates = [...new Set(data.map(d => d.date))]
-    .sort((a, b) => new Date(b) - new Date(a));
+
+  const { data: x, loading } = useFetchData();
+  const data = x?.historical || [];
+  const dates = [...new Set(data.map(d => d.date))].sort((a, b) => new Date(b) - new Date(a));
 
   const todayDate = dates[0];
   const yesterdayDate = dates[1];
@@ -18,7 +20,7 @@ const HeatMap = () => {
 
     if (!yesterdayItem) return null;
 
-    const todayPrice = todayItem.modal_price;     
+    const todayPrice = todayItem.modal_price;
     const yesterdayPrice = yesterdayItem.modal_price;
 
     if (!yesterdayPrice) return null;
@@ -40,29 +42,33 @@ const HeatMap = () => {
 
   return (
     <div className="w-full flex justify-center items-center py-8 bg-white dark:bg-[#0b0e14] rounded-3xl shadow shadow-taupe-600 transition-colors duration-300">
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-6xl px-4">
-        {formattedData.map((item, index) => (
-          <div 
-            key={index}
-            className={`${item.bgColor} h-32 rounded-2xl p-4 flex flex-col justify-between shadow-md transition-all hover:scale-[1.02] active:scale-95 cursor-default`}
-          >
-            {/* Top Left */}
-            <span className="text-white font-bold text-sm truncate">
-              {item.name}
-            </span>
 
-            {/* Bottom Right */}
-            <div className="text-right">
-              <span className="text-white block text-xl font-black tracking-tight">
-                ₹{item.price.toLocaleString('en-IN')}
-              </span>
-              <span className="text-white text-xs font-bold opacity-90">
-                {item.percent}
-              </span>
-            </div>
-          </div>
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-6xl px-4">
+        {formattedData.length > 0 ?
+          (formattedData?.map(
+            (item, index) => (
+              <div
+                key={index}
+                className={`${item.bgColor} h-32 rounded-2xl p-4 flex flex-col justify-between shadow-md transition-all hover:scale-[1.02] active:scale-95 cursor-default`}
+              >
+                {/* Top Left */}
+                <span className="text-white font-bold text-sm truncate">
+                  {item.name}
+                </span>
+
+                {/* Bottom Right */}
+                <div className="text-right">
+                  <span className="text-white block text-xl font-black tracking-tight">
+                    ₹{item.price.toLocaleString('en-IN')}
+                  </span>
+                  <span className="text-white text-xs font-bold opacity-90">
+                    {item.percent}
+                  </span>
+                </div>
+              </div>
+            )
+          )) : (loading ? "" : "Data not found")
+        }
       </div>
     </div>
   );

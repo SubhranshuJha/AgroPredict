@@ -32,7 +32,7 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
       </Routes> */}
-      <GlobalLoader />
+      {/* <GlobalLoader /> */}
       <RouterProvider router={router} />
 
     </div>

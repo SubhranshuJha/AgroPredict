@@ -1,4 +1,5 @@
 import Card from "../Components/Card.jsx";
+import CardUiAnimation from "../Components/CardUiAnimation.jsx";
 import iconMap from '../assets/map.json'
 import { useFetchData } from "../contexts/Data.jsx";
 import { useEffect, useState, useMemo } from "react";
@@ -15,10 +16,6 @@ function Home() {
 
   const historicalData = data?.historical?.filter(commodity => commodity.date === todayDate) || []
   const predictedData = data?.predictions || []
-
-  const onSortingChange = (val) => {
-    setSortBy(val)
-  }
 
   const sortedData = useMemo(() => {
     if (!historicalData.length) return [];
@@ -59,10 +56,10 @@ function Home() {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center">
-      <div className="flex gap-4 max-h-fit w-full items-center justify-center">
-
+      {/* buttons and select */}
+      <div className="flex m-3 gap-4 max-h-fit w-full items-center justify-center">
         <button
-          className="border max-w-fit border-amber-400 p-3 mt-10 rounded-2xl bg-blue-500/50"
+          className="border max-w-fit border-amber-400 p-3 rounded-2xl bg-blue-500/50"
           onClick={fetchData}
         >
           Refresh Data
@@ -71,7 +68,7 @@ function Home() {
           className="w-30 p-3 border max-h-fit bg-black min-w-fit"
           value={sortBy}
           // defaultValue={"none"}
-          onChange={(e) => onSortingChange && onSortingChange(e.target.value)}
+          onChange={(e) => setSortBy(e.target.value)}
         >
           {sortOptions.map((sortBy, index) =>
             <option key={index} value={sortBy}>
@@ -94,25 +91,37 @@ function Home() {
           </button>
         ))}
       </div>
+
+      {/* actual data rendering of cards */}
       <div className="py-5 w-11/12 mx-auto min-h-11/12">
         <div className=" mt-2 p-5 min-h-screen rounded-3xl shadow shadow-taupe-600 ">
+
           {/* <div className="flex flex-wrap "> */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-fr">
             {
-              sortedData?.length > 0 ? (
-                sortedData.map((entity) => (
-                  <Card
-                    key={entity.commodity}
-                    historicalData={entity}
-                    predictedData={
-                      predictedData?.filter(
-                        item => item.commodity === entity.commodity
-                      )
-                    }
-                    icon={`/icons/${iconMap[entity.commodity.trim()]}.png`}
-                  />
+              loading ? (
+                Array.from({ length: 8 }).map((_, index) => (
+                  <CardUiAnimation key={index} />
                 ))
-              ) : (loading ? "" : <h1>Data not found</h1>)
+              ) : (
+                //  card loop rendering
+                sortedData?.length > 0 ? (
+                  sortedData.map((entity) => (
+                    // one card rendering 
+                    <Card
+                      key={entity.commodity}
+                      historicalData={entity}
+                      predictedData={
+                        predictedData?.filter(
+                          item => item.commodity === entity.commodity
+                        )
+                      }
+                      icon={`/icons/${iconMap[entity.commodity.trim()]}.png`}
+                    />
+                  ))
+                ) : (<h1>Data not found</h1>)
+              )
+
             }
 
           </div>
