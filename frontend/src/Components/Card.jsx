@@ -2,7 +2,10 @@ import React, { useMemo } from 'react'
 
 
 function Card({ historicalData, icon }) {
-
+    const date = historicalData?.date || "";
+    const [year, month, day] = date.split("-");
+    const formattedDate = `${day}-${month}-${year}`;
+    
     return (
         <div className='hover:scale-105 active:scale-95 rounded-2xl bg-white/70 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 p-4 flex flex-col justify-between h-full'>
 
@@ -58,7 +61,9 @@ function Card({ historicalData, icon }) {
                     </div>
 
                 </div>
-
+                <p className='text-center text-white/25'>
+                    Last refreshed: {formattedDate}
+                </p>
                
             </div>
 
