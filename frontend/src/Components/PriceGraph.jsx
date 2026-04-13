@@ -14,14 +14,28 @@ import { useFetchData } from '../contexts/Data';
 const PriceGraph = ({ commodityName = "Wheat" }) => {
   const { data, loading } = useFetchData();
   const [selectedDays, setSelectedDays] = useState(7);
+
+  // take data from context and filter it and sort based on date and slice it based on selected days
   const rawData = (data?.historical || [])
     .filter(item => item.commodity.trim() === commodityName.trim())
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .sort((a, b) => new Date(a.date) - new Date(b.date)) 
     .slice(-selectedDays);
 
+  // determine color based on price diffrence today and last day available in graph
+  let trendColor = "#64748b"; 
+  if (rawData.length >= 2) {
+    const startPrice = rawData[0].avg_price;
+    const endPrice = rawData[rawData.length - 1].avg_price;
+
+    // green if price increase , red for price decrease and gray for no change
+    if (endPrice > startPrice) trendColor = "#10b981"; 
+    else if (endPrice < startPrice) trendColor = "#ef4444"; 
+  }
+
+  // format data for recharts
   const chartData = rawData.map(item => ({
     date: new Date(item.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }),
-    price: item.modal_price
+    price: item.avg_price
   }));
 
   return (
@@ -29,19 +43,18 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
 
       {loading ? ("loader") : (
 
-
         chartData.length > 0 ? (
           <>
-            {/* HEADER SECTION WITH DROPDOWN */}
+            {/* header with dropdown */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
               <div>
                 <h3 className="text-2xl font-black text-gray-800 dark:text-white tracking-tight">
-                  {commodityName} <span className="text-emerald-500 text-lg font-bold">Trend</span>
+                  {commodityName} <span style={{ color: trendColor }} className="text-lg font-bold">Trend</span>
                 </h3>
               </div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Market movement overview</p>
 
-              {/* STYLED SELECT DROPDOWN */}
+              {/* select dropdown and choose how many days you want to view */}
               <div className="relative">
                 <select
                   value={selectedDays}
@@ -67,8 +80,9 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
                 <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                      {/* Using trendColor for the gradient fill */}
+                      <stop offset="5%" stopColor={trendColor} stopOpacity={0.4} />
+                      <stop offset="95%" stopColor={trendColor} stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#888888" opacity={0.1} />
@@ -93,12 +107,13 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
                       color: '#fff',
                       boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)'
                     }}
-                    itemStyle={{ color: '#10b981', fontWeight: 'bold' }}
+                    itemStyle={{ color: trendColor, fontWeight: 'bold' }}
+                    formatter={(value) => [`₹${value}`, 'Price']}
                   />
                   <Area
                     type="monotone"
                     dataKey="price"
-                    stroke="#10b981"
+                    stroke={trendColor} // Stroke changes color based on price trend
                     strokeWidth={4}
                     fillOpacity={1}
                     fill="url(#colorPrice)"

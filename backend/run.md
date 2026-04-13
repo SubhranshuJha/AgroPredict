@@ -50,6 +50,11 @@ python -m venv venv
 ```bash
 venv\Scripts\activate
 ```
+### Create table with this Command
+
+```bash
+python -m app.create_table
+```
 
 ---
 
