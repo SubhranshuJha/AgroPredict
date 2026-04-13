@@ -52,8 +52,6 @@ def get_market_alerts(db: Session):
 
         if week_chg < -8:
             alerts.append({
-                "id": _build_alert_id(rows[-1].id, "drop7"),
-                "source_id": rows[-1].id,
                 "type": "danger",
                 "commodity": name,
                 "title": f"{name}: Sharp 7-day fall",
@@ -66,8 +64,6 @@ def get_market_alerts(db: Session):
             })
         elif week_chg > 8:
             alerts.append({
-                "id": _build_alert_id(rows[-1].id, "rise7"),
-                "source_id": rows[-1].id,
                 "type": "info",
                 "commodity": name,
                 "title": f"{name}: Strong 7-day rally",
@@ -82,8 +78,6 @@ def get_market_alerts(db: Session):
         if high_30 > 0 and (high_30 - current) / high_30 < 0.02:
             near_high_gap_pct = (high_30 - current) / high_30 * 100
             alerts.append({
-                "id": _build_alert_id(rows[-1].id, "hi30"),
-                "source_id": rows[-1].id,
                 "type": "info",
                 "commodity": name,
                 "title": f"{name}: Near 30-day high",
@@ -98,8 +92,7 @@ def get_market_alerts(db: Session):
         if low_30 > 0 and (current - low_30) / low_30 < 0.02:
             near_low_gap_pct = (current - low_30) / low_30 * 100
             alerts.append({
-                "id": _build_alert_id(rows[-1].id, "lo30"),
-                "source_id": rows[-1].id,
+
                 "type": "warn",
                 "commodity": name,
                 "title": f"{name}: Near 30-day low",
@@ -113,8 +106,7 @@ def get_market_alerts(db: Session):
 
         if vol > 6:
             alerts.append({
-                "id": _build_alert_id(rows[-1].id, "vol"),
-                "source_id": rows[-1].id,
+         
                 "type": "warn",
                 "commodity": name,
                 "title": f"{name}: High volatility detected",
@@ -126,8 +118,7 @@ def get_market_alerts(db: Session):
         if abs(day_chg) > 5:
             direction = "spike" if day_chg > 0 else "drop"
             alerts.append({
-                "id": _build_alert_id(rows[-1].id, "daymove"),
-                "source_id": rows[-1].id,
+
                 "type": "danger" if day_chg < 0 else "info",
                 "commodity": name,
                 "title": f"{name}: Unusual 1-day {direction}",
@@ -139,14 +130,16 @@ def get_market_alerts(db: Session):
                 "priority_score": (95 if day_chg < 0 else 65) + abs(day_chg) * 2,
             })
 
-    order = {"danger": 0, "warn": 1, "info": 2}
-    alerts.sort(
-        key=lambda a: (
-            -a.get("priority_score", 0),
-            order.get(a["type"], 3),
-            a["commodity"],
-        )
-    )
+        order = {"danger": 0, "warn": 1, "info": 2}
+
+        def sort_key(alert):
+            priority = alert.get("priority_score", 0)
+            type_order = order.get(alert["type"], 3)
+            commodity = alert["commodity"]
+
+            return (-priority, type_order, commodity)
+
+        alerts.sort(key=sort_key)
 
     commodity_alert_count = {}
     selected_alerts = []
