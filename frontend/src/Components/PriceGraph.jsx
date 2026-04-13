@@ -7,7 +7,8 @@ import {
   ResponsiveContainer,
   AreaChart,
   Area,
-  Line
+  Line,
+  ReferenceLine
 } from 'recharts';
 import { useFetchData } from '../contexts/Data';
 
@@ -26,7 +27,7 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
     .filter(item => item.commodity.trim() === commodityName.trim())
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-console.log(rawPredictions)
+  console.log(rawPredictions)
 
   // color chose for historical data
   let trendColor = "#64748b";
@@ -39,13 +40,13 @@ console.log(rawPredictions)
   }
 
   // color chose for prediction data
-  let predictTrendColor = "#94a3b8"; 
+  let predictTrendColor = "#94a3b8";
   if (rawPredictions.length >= 2) {
     const startPred = rawPredictions[0].predicted_price;
     const endPred = rawPredictions[rawPredictions.length - 1].predicted_price;
 
-    if (endPred > startPred) predictTrendColor = "#34d399"; 
-    else if (endPred < startPred) predictTrendColor = "#f87171"; 
+    if (endPred > startPred) predictTrendColor = "#34d399";
+    else if (endPred < startPred) predictTrendColor = "#f87171";
   }
 
   // combine historical and prediction data 
@@ -85,9 +86,27 @@ console.log(rawPredictions)
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: predictTrendColor }}></span>
-                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">7D Forecast</span>
+                <div className="flex items-center gap-2 relative group cursor-pointer">
+                  <span
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: predictTrendColor }}
+                  ></span>
+
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    7D Forecast
+                  </span>
+
+                  <div className="absolute top-6 left-1/2 -translate-x-1/2 hidden group-hover:block bg-black text-white text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap z-50">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-green-400 rounded-full"></span> Increase
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-red-400 rounded-full"></span> Decrease
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-gray-400 rounded-full"></span> No Change
+                    </div>
+                  </div>
                 </div>
                 <div className="relative">
                   <select
@@ -110,7 +129,13 @@ console.log(rawPredictions)
 
             <div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData}>
+                <AreaChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 30 }}>
+                  <ReferenceLine
+                    x={chartData[rawHistorical.length - 1]?.date}
+                    stroke="#ffffff"
+                    strokeDasharray="4 4"
+                    strokeOpacity={0.5}
+                  />
                   <defs>
                     <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor={trendColor} stopOpacity={0.4} />
@@ -124,12 +149,25 @@ console.log(rawPredictions)
                     tickLine={false}
                     tick={{ fill: '#888888', fontSize: 11, fontWeight: 'bold' }}
                     dy={15}
+                    label={{
+                      value: "Date",
+                      position: "bottom",
+                      offset: 20,
+                      style: { fill: '#888888', fontSize: 12, fontWeight: 'bold' }
+                    }}
                   />
                   <YAxis
                     domain={['auto', 'auto']}
                     axisLine={false}
                     tickLine={false}
                     tick={{ fill: '#888888', fontSize: 11, fontWeight: 'bold' }}
+                    tickFormatter={(value) => `₹${(value / 1000).toFixed(2)}k`}
+                    label={{
+                      value: "Price",
+                      angle: -90,
+                      position: "insideLeft",
+                      style: { fill: '#888888', fontSize: 12, fontWeight: 'bold' }
+                    }}
                   />
                   <Tooltip
                     contentStyle={{
