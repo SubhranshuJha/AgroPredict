@@ -63,6 +63,49 @@ Because of that:
 - frontend must support cached responses
 - frontend should still handle empty `predictions` safely
 
+### `GET /api/alerts`
+
+General market alerts for the dashboard.
+
+This endpoint returns only meaningful alerts generated from the latest historical market data.
+
+Frontend expectations:
+
+- maximum of 10 alerts per request
+- alerts are prioritized by severity and impact
+- alert ids are derived from the backend database row id
+- no personalized user alerts are included for now
+
+Example response:
+
+```json
+{
+  "alerts": [
+    {
+      "id": "128_drop7",
+      "source_id": 128,
+      "type": "danger",
+      "commodity": "Wheat",
+      "title": "Wheat: Sharp 7-day fall",
+      "detail": "Down 9.4% this week (Rs.2,710 -> Rs.2,455).",
+      "generated_at": "2026-04-12"
+    }
+  ],
+  "count": 1,
+  "max_alerts": 10,
+  "as_of_date": "2026-04-12",
+  "scope": "general_market_alerts"
+}
+```
+
+Field notes:
+
+- `alerts`: list of general market alerts to render in the UI
+- `count`: number of alerts returned in the current response
+- `max_alerts`: hard cap enforced by the backend
+- `as_of_date`: latest historical date used to generate the alerts
+- `scope`: fixed marker for this general alert feed
+
 ## Response Shape
 
 Successful live or cached response:
@@ -170,6 +213,7 @@ Prediction row shape:
 ## Frontend Recommendations
 
 - Treat `/api/predict` as the single source for now.
+- Treat `/api/alerts` as the single alert feed for now.
 - Do not assume `predictions` is always non-empty, even though backend now tries to generate them from cached data during fallback.
 - Do not assume `live_fetch` is always `true`.
 - Render historical data even when predictions are empty.
@@ -199,6 +243,13 @@ Live market data is temporarily unavailable. Showing cached market data.
 - `live_fetch === false`
 - show fallback notice
 - predictions may still be present because backend can generate them from cached historical DB data
+
+### Alerts Feed
+
+- `GET /api/alerts` returns up to 10 alerts
+- render them sorted in the order returned by the backend
+- use `type` to style severity
+- use `generated_at` to show freshness if needed
 
 ### Empty Predictions
 
@@ -245,4 +296,6 @@ if (!data.success) {
 - [main.py](/d:/AgroPredict/AgroPredict_Dev/AgroPredict/backend/app/main.py)
 - [predict_route.py](/d:/AgroPredict/AgroPredict_Dev/AgroPredict/backend/app/routes/predict_route.py)
 - [predict_controller.py](/d:/AgroPredict/AgroPredict_Dev/AgroPredict/backend/app/controller/predict_controller.py)
+- [alerts_route.py](/d:/AgroPredict/AgroPredict_Dev/AgroPredict/backend/app/routes/alerts_route.py)
+- [alerts_controller.py](/d:/AgroPredict/AgroPredict_Dev/AgroPredict/backend/app/controller/alerts_controller.py)
 - [get_all_data.py](/d:/AgroPredict/AgroPredict_Dev/AgroPredict/backend/app/utils/get_all_data.py)
