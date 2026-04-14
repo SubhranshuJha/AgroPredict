@@ -62,7 +62,7 @@ function Card({ historicalData, icon }) {
 
                 </div>
                 <p className='text-center text-white/25'>
-                    Last refreshed: {formattedDate}
+                    Data of {formattedDate}
                 </p>
                
             </div>

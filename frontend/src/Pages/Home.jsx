@@ -13,15 +13,16 @@ function Home() {
   const [sortBy, setSortBy] = useState("")
   const [filterBy, setFilterBy] = useState(null);
   const [trend, setTrend] = useState("all");
+  const today = new Date().toLocaleDateString('en-CA');
+  const [selectedDate, setSelectedDate] = useState(today);
 
-  const todayDate = new Date().toLocaleDateString('en-CA')
-  const yesterdayDate = new Date(Date.now() - 86400000)
-    .toLocaleDateString('en-CA')
+  // const todayDate = selectedDate
+  const previousDate = new Date(new Date(selectedDate).getTime() - 86400000).toLocaleDateString('en-CA')
 
-  const historicalData = data?.historical?.filter(commodity => commodity.date === todayDate) || []
+  const historicalData = data?.historical?.filter(commodity => commodity.date === selectedDate) || []
   // const historicalData = data?.historical?.filter(commodity => commodity.date === '2026-04-13') || []
   const yesterdayData = data?.historical?.filter(
-    commodity => commodity.date === yesterdayDate
+    commodity => commodity.date === previousDate
   ) || []
   const predictedData = data?.predictions || []
   totalAvailableCommodities = historicalData?.length || 0
@@ -86,7 +87,7 @@ function Home() {
           return 0;
       }
     });
-  }, [historicalData, sortBy, filterBy])
+  }, [historicalData, sortBy, filterBy, search, trend, yesterdayData, predictedData])
 
 
 
@@ -202,7 +203,7 @@ function Home() {
                 onClick={() => setTrend(t.key)}
                 className={`px-3 py-2 rounded-xl border flex items-center gap-1 whitespace-nowrap
         ${trend === t.key
-                    ? "bg-blue-500"
+                    ? "bg-blue-500/70"
                     : "dark:bg-black"
                   }
       `}
@@ -211,6 +212,37 @@ function Home() {
                 {t.label}
               </button>
             ))}
+            <div className="w-full mt-3 flex justify-start">
+              <div className="relative">
+
+                {/* Icon */}
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  📅
+                </span>
+
+                {/* Date Input */}
+                <input
+                  type="date"
+                  value={selectedDate}
+                  max={today}
+                  onChange={(e) => {
+                    if (!e.target.value) return setSelectedDate(today);
+                    setSelectedDate(e.target.value)
+                  }}
+                  onKeyDown={(e) => e.preventDefault()}
+                  // onMouseDown={(e) => e.preventDefault()}
+                  onFocus={(e) => e.target.showPicker?.()}
+                  className="pl-10 pr-3 py-2 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-cyan-300/60 dark:text-black "
+                />
+                <button
+                  onClick={() => { setSelectedDate(today) }}
+                  className="px-3 mx-3 py-2 rounded-xl border dark:bg-cyan-300/60 dark:text-black/90 transition transform whitespace-nowrap hover:scale-105 active:scale-95 duration-150 dark:hover:ring-1 dark:hover:ring-white"
+                >
+                  Today
+                </button>
+
+              </div>
+            </div>
 
           </div>
 
@@ -236,7 +268,31 @@ function Home() {
                       icon={`/icons/${iconMap[entity.commodity.trim()]}.png`}
                     />
                   ))
-                ) : (<h1>Data not found</h1>)
+                ) : (<div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
+
+                  {/* Icon */}
+                  <div className="text-5xl mb-4">
+                    {trend === "rising" && "📈"}
+                    {trend === "falling" && "📉"}
+                    {trend === "stable" && "〰️"}
+                    {trend === "all" && "📦"}
+                  </div>
+
+                  {/* Title */}
+                  <h1 className="text-xl font-semibold mb-2">
+                    {totalAvailableCommodities > 0
+                      ? `No ${trend} commodities found on ${selectedDate}`
+                      : "No Data Available"}
+                  </h1>
+
+                  {/* Subtitle */}
+                  <p className="text-gray-500 max-w-md">
+                    {totalAvailableCommodities > 0
+                      ? "Try changing filters, search, or trend selection."
+                      : "Please refresh or check back later."}
+                  </p>
+
+                </div>)
               )
             }
 
