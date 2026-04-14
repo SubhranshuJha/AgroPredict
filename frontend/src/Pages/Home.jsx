@@ -3,6 +3,7 @@ import CardUiAnimation from "../Components/CardUiAnimation.jsx";
 import iconMap from '../assets/map.json'
 import { useFetchData } from "../contexts/Data.jsx";
 import { useEffect, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 function Home() {
   let totalAvailableCommodities = 0;
@@ -225,17 +226,22 @@ function Home() {
               ) : (
                 sortedData?.length > 0 ? (
                   sortedData.map((entity) => (
-                    <Card
-                      key={entity.commodity}
-                      historicalData={entity}
-                      predictedData={
-                        predictedData?.filter(
-                          item => item.commodity === entity.commodity
-                        )
-                      }
-                      icon={`/icons/${iconMap[entity.commodity.trim()]}.png`}
-                    />
-                  ))
+  <Link
+    key={entity.commodity}
+    to={`/commodityInformation/${encodeURIComponent(entity.commodity)}`}
+    className="block"
+  >
+    <Card
+      historicalData={entity}
+      predictedData={
+        predictedData?.filter(
+          item => item.commodity === entity.commodity
+        )
+      }
+      icon={`/icons/${iconMap[entity.commodity.trim()]}.png`}
+    />
+  </Link>
+))
                 ) : (<h1>Data not found</h1>)
               )
             }
