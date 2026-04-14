@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "frontend": "vite",
+    "backend": "cd ../backend && venv\\Scripts\\python -m uvicorn app.main:app --reload",
+    "addData": "node src/processData.cjs",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

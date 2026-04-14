@@ -7,7 +7,7 @@ function CommodityInfo() {
   return (
     <>
     <div>CommodityInfo</div>
-    <PriceGraph commodityName={commodityId}/>
+    <PriceGraph commodityName={decodeURIComponent(commodityId)}/>
     
     </>
   )
