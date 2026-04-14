@@ -72,6 +72,8 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
     }))
   ];
 
+  const hasPrediction = rawPredictions.length > 0;
+
   return (
     <div className="w-full p-6 bg-white dark:bg-[#0b0e14] rounded-3xl shadow shadow-taupe-600 border border-gray-200 dark:border-white/10 transition-all duration-300">
 
@@ -86,7 +88,8 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 relative group cursor-pointer">
+
+                {hasPrediction ? (<div className="flex items-center gap-2 relative group cursor-pointer">
                   <span
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: predictTrendColor }}
@@ -96,18 +99,23 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
                     7D Forecast
                   </span>
 
-                  <div className="absolute top-6 left-1/2 -translate-x-1/2 hidden group-hover:block bg-black text-white text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap z-50">
-                    <div className="flex items-center gap-2">
+                  <div className="absolute text-[14px] top-6 left-1/2 -translate-x-1/2 hidden group-hover:block bg-black text-white text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap z-50">
+                    <div className="flex items-center gap-2 ">
                       <span className="w-2 h-2 bg-green-400 rounded-full"></span> Increase
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 bg-red-400 rounded-full"></span> Decrease
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-gray-400 rounded-full"></span> No Change
+                      <span className="w-2 h-2 bg-gray-400 rounded-full"></span> Stable
                     </div>
                   </div>
-                </div>
+                </div>) :
+                  (
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    Prediction Not Available
+                  </span>
+                )}
                 <div className="relative">
                   <select
                     value={selectedDays}

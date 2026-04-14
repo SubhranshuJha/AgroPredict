@@ -1,5 +1,6 @@
 import { useFetchData } from '../contexts/Data';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const HeatMap = () => {
 
@@ -8,44 +9,53 @@ const HeatMap = () => {
   const data = x?.historical || [];
   const dates = [...new Set(data.map(d => d.date))].sort((a, b) => new Date(b) - new Date(a));
 
-  const todayDate = dates[0];
-  const yesterdayDate = dates[1];
+
+  const grouped = data.reduce((acc, item) => {
+    if (!acc[item.commodity]) {
+      acc[item.commodity] = [];
+    }
+    acc[item.commodity].push(item);
+    return acc;
+  }, {});
+
 
   // state for sorting
   const [sorted, setSorted] = useState('desc-percent');
 
-  // filter data for today and yesterday and sort it based on price
-  const todayData = data.filter(d => d.date === todayDate);
-  const yesterdayData = data.filter(d => d.date === yesterdayDate);
-
   // data for heatmap
-  const formattedData = todayData.map((todayItem) => {
-    const yesterdayItem = yesterdayData.find(
-      y => y.commodity === todayItem.commodity);
+  const formattedData = Object.entries(grouped).map(([commodity, records]) => {
 
-    // skip if no yesterday data or price available for comparison
-    if (!yesterdayItem || !yesterdayItem.avg_price) return null;
+    // sort by date desc
+    const sorted = records.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // choose today and yesterday price
+    const todayItem = sorted[0];        // latest available
+    const yesterdayItem = sorted[1];    // previous available
+
+    if (!todayItem || !yesterdayItem) return null;
+
     const todayPrice = todayItem.avg_price;
     const yesterdayPrice = yesterdayItem.avg_price;
 
     const diff = todayPrice - yesterdayPrice;
     const percent = ((diff / yesterdayPrice) * 100);
 
-    // choose color based on price
     let bgColor = "bg-slate-500 dark:bg-slate-700";
     if (diff > 0) bgColor = "bg-green-500 dark:bg-green-600";
     if (diff < 0) bgColor = "bg-red-500 dark:bg-red-600";
 
     return {
-      name: todayItem.commodity,
+      name: commodity,
       price: Math.round(todayPrice),
       percentNum: percent,
       percent: `${percent > 0 ? '+' : ''}${percent.toFixed(2)}%`,
-      bgColor
+      bgColor,
+      formattedDate: new Date(todayItem.date).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short'
+      })
     };
-  }).filter(Boolean)
+
+  }).filter(Boolean);
 
 
 
@@ -100,23 +110,31 @@ const HeatMap = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl mx-auto px-10">
         {formattedData.length > 0 ? (
           sortedData.map((item, index) => (
-            <div
+            <Link
               key={index}
-              className={`${item.bgColor} h-36 rounded-3xl p-6 flex flex-col justify-between shadow-lg transition-all hover:scale-[1.03] hover:brightness-110 active:scale-95 cursor-default relative overflow-hidden group`}
+              to={`/commodityInformation/${item.name}`}
+              className="block"
             >
-              <span className="text-white font-black text-sm uppercase tracking-tight opacity-90 group-hover:opacity-100">
-                {item.name}
-              </span>
+              <div
+                className={`${item.bgColor} h-36 rounded-3xl p-6 flex flex-col justify-between shadow-lg transition-all hover:scale-[1.03] hover:brightness-110 active:scale-95 cursor-pointer relative overflow-hidden group`}
+              >
+                <span className="text-white font-black text-sm uppercase tracking-tight opacity-90 group-hover:opacity-100">
+                  {item.name}
+                </span>
 
-              <div className="text-right">
-                <span className="text-white block text-2xl font-black tracking-tighter">
-                  ₹{item.price.toLocaleString('en-IN')}
-                </span>
-                <span className="text-[10px] font-black bg-black/20 text-white px-2 py-1 rounded-lg inline-block mt-2">
-                  {item.percent}
-                </span>
+                <div className="text-right">
+                  <span className="text-white block text-2xl font-black tracking-tighter">
+                    ₹{item.price.toLocaleString('en-IN')}
+                  </span>
+                  <span className="text-[10px] font-black bg-black/20 text-white px-2 py-1 rounded-lg inline-block mt-2">
+                    {item.percent}
+                  </span>
+                  <span className="text-[15px] text-white/80 block mt-1">
+                    {item.formattedDate}
+                  </span>
+                </div>
               </div>
-            </div>
+            </Link >
           ))
         ) : (
           <div className="col-span-full py-20 text-center text-gray-400 font-bold uppercase tracking-widest animate-pulse">

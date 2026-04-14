@@ -3,6 +3,7 @@ import CardUiAnimation from "../Components/CardUiAnimation.jsx";
 import iconMap from '../assets/map.json'
 import { useFetchData } from "../contexts/Data.jsx";
 import { useEffect, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 function Home() {
   let totalAvailableCommodities = 0;
@@ -257,42 +258,23 @@ function Home() {
               ) : (
                 sortedData?.length > 0 ? (
                   sortedData.map((entity) => (
-                    <Card
-                      key={entity.commodity}
-                      historicalData={entity}
-                      predictedData={
-                        predictedData?.filter(
-                          item => item.commodity === entity.commodity
-                        )
-                      }
-                      icon={`/icons/${iconMap[entity.commodity.trim()]}.png`}
-                    />
-                  ))
-                ) : (<div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
-
-                  {/* Icon */}
-                  <div className="text-5xl mb-4">
-                    {trend === "rising" && "📈"}
-                    {trend === "falling" && "📉"}
-                    {trend === "stable" && "〰️"}
-                    {trend === "all" && "📦"}
-                  </div>
-
-                  {/* Title */}
-                  <h1 className="text-xl font-semibold mb-2">
-                    {totalAvailableCommodities > 0
-                      ? `No ${trend} commodities found on ${selectedDate}`
-                      : "No Data Available"}
-                  </h1>
-
-                  {/* Subtitle */}
-                  <p className="text-gray-500 max-w-md">
-                    {totalAvailableCommodities > 0
-                      ? "Try changing filters, search, or trend selection."
-                      : "Please refresh or check back later."}
-                  </p>
-
-                </div>)
+  <Link
+    key={entity.commodity}
+    to={`/commodityInformation/${encodeURIComponent(entity.commodity)}`}
+    className="block"
+  >
+    <Card
+      historicalData={entity}
+      predictedData={
+        predictedData?.filter(
+          item => item.commodity === entity.commodity
+        )
+      }
+      icon={`/icons/${iconMap[entity.commodity.trim()]}.png`}
+    />
+  </Link>
+))
+                ) : (<h1>Data not found</h1>)
               )
             }
 
