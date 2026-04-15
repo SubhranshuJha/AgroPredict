@@ -6,12 +6,11 @@ function Navbar() {
   const items = [
     { path: '/', name: 'Home' },
     { path: '/dashboard', name: 'Dashboard' },
-    { path: '/login', name: 'Login' },
-    { path: '/register', name: 'Register' },
+    { path: '/market-overview', name: 'Overview' },
   ]
 
   return (
-    <nav className='sticky top-0 z-50 mx-auto my-4 w-full lg:max-w-7xl h-20 flex items-center justify-between px-8 bg-gray-100/90 dark:bg-slate-900/90 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl shadow-xl transition-all duration-300'>
+    <nav className='sticky top-0 z-50 mx-auto mt-4 w-full lg:max-w-7xl h-20 flex items-center justify-between px-8 bg-gray-100/90 dark:bg-slate-900/90 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl shadow-xl transition-all duration-300'>
       <Link to={'/'} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <img src={Logo} alt="AgroPredict" className='h-10 w-16' />
         <span className="text-xl font-black tracking-tighter dark:text-white hidden sm:block">

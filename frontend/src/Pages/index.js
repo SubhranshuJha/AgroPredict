@@ -1,9 +1,9 @@
 import Home from "./Home";
 import Dashboard from "./Dashboard";
-import Login from "./Login";
-import Register from "./Register";
 import CommodityInfo from './CommodityInfo'
+import AboutUs from './AboutUs'
+import MarketOverview from './OverView'
 
 export {
-    Home, Dashboard, Login, Register, CommodityInfo
+    Home, Dashboard, CommodityInfo, AboutUs, MarketOverview
 }

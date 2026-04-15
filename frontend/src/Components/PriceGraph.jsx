@@ -13,7 +13,7 @@ import {
 import { useFetchData } from '../contexts/Data';
 
 const PriceGraph = ({ commodityName = "Wheat" }) => {
-  const { data, loading } = useFetchData();
+  const { data, dataLoading } = useFetchData();
   const [selectedDays, setSelectedDays] = useState(7);
 
   // filter historical data
@@ -77,7 +77,7 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
   return (
     <div className="w-full p-6 bg-white dark:bg-[#0b0e14] rounded-3xl shadow shadow-taupe-600 border border-gray-200 dark:border-white/10 transition-all duration-300">
 
-      {loading ? ("loader") : (
+      {dataLoading ? ("loader") : (
         chartData.length > 0 ? (
           <>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
@@ -112,10 +112,10 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
                   </div>
                 </div>) :
                   (
-                  <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                    Prediction Not Available
-                  </span>
-                )}
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                      Prediction Not Available
+                    </span>
+                  )}
                 <div className="relative">
                   <select
                     value={selectedDays}

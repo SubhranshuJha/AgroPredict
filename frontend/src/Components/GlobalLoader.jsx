@@ -2,9 +2,9 @@ import React from "react";
 import { useFetchData } from "../contexts/Data";
 
 const GlobalLoader = () => {
-  const { loading } = useFetchData();
+  const { dataLoading } = useFetchData();
 
-  if (!loading) return null;
+  if (!dataLoading) return null;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">

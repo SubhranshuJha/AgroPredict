@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import { Routes, Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'
-import { Home, Dashboard, Login, Register, CommodityInfo } from './Pages'
+import { Home, Dashboard, CommodityInfo, AboutUs,MarketOverview } from './Pages'
 import Layout from './Layout'
 import GlobalLoader from './Components/GlobalLoader'
 
@@ -15,8 +15,8 @@ function App() {
         <Route index element={<Home />} />
         <Route path='commodityInformation/:commodityId' element={<CommodityInfo />} />
         <Route path='dashboard' element={<Dashboard />} />
-        <Route path='login' element={<Login />} />
-        <Route path='register' element={<Register />} />
+        <Route path='about' element={<AboutUs />} />
+        <Route path='market-overview' element={<MarketOverview />} />
 
       </Route >
     )

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const HeatMap = () => {
 
   // fetch data and shorting it
-  const { data: x, loading } = useFetchData();
+  const { data: x, dataLoading } = useFetchData();
   const data = x?.historical || [];
   const dates = [...new Set(data.map(d => d.date))].sort((a, b) => new Date(b) - new Date(a));
 
@@ -112,7 +112,7 @@ const HeatMap = () => {
           sortedData.map((item, index) => (
             <Link
               key={index}
-              to={`/commodityInformation/${item.name}`}
+              to={`/commodityInformation/${encodeURIComponent(item.name)}`}
               className="block"
             >
               <div
@@ -138,7 +138,7 @@ const HeatMap = () => {
           ))
         ) : (
           <div className="col-span-full py-20 text-center text-gray-400 font-bold uppercase tracking-widest animate-pulse">
-            {loading ? "Analyzing Market Data..." : "Data not found"}
+            {dataLoading ? "Analyzing Market Data..." : "Data not found"}
           </div>
         )}
       </div>
