@@ -112,7 +112,7 @@ const HeatMap = () => {
           sortedData.map((item, index) => (
             <Link
               key={index}
-              to={`/commodityInformation/${item.name}`}
+              to={`/commodityInformation/${encodeURIComponent(item.name)}`}
               className="block"
             >
               <div

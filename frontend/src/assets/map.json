@@ -9,9 +9,12 @@
   "Foxtail Millet(Navane)": "Navane",
   "Barley(Jau)": "Barley",
   "Bajra(Pearl Millet/Cumbu)": "Bajra",
-  "Sweet Corn": "Maize",
+  "Sweet Corn": "Corn",
   "Kodo Millet(Varagu)": "Kodo",
   "Wheat": "Wheat",
   "Kutki":"Kutki",
-  "Same/Savi":"Same"
+  "Same/Savi":"Same",
+  "T.V. Cumbu" : "Cumbu",
+  "Hybrid Cumbu" : "Hybrid",
+  "Jaee" : "Jaee"
 }

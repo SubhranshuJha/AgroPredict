@@ -12,9 +12,9 @@ import {
 } from 'recharts';
 import { useFetchData } from '../contexts/Data';
 
-const PriceGraph = ({ commodityName = "Wheat" }) => {
+const PriceGraph = ({ commodityName = "Wheat", selectedDays = 7, setSelectedDays }) => {
   const { data, loading } = useFetchData();
-  const [selectedDays, setSelectedDays] = useState(7);
+
 
   // filter historical data
   const rawHistorical = (data?.historical || [])
@@ -26,8 +26,6 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
   const rawPredictions = (data?.predictions || [])
     .filter(item => item.commodity.trim() === commodityName.trim())
     .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  console.log(rawPredictions)
 
   // color chose for historical data
   let trendColor = "#64748b";
@@ -48,7 +46,6 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
     if (endPred > startPred) predictTrendColor = "#34d399";
     else if (endPred < startPred) predictTrendColor = "#f87171";
   }
-
   // combine historical and prediction data 
   const chartData = [
     ...rawHistorical.map((item, index) => {
@@ -71,6 +68,7 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
       type: 'predictions'
     }))
   ];
+  
 
   const hasPrediction = rawPredictions.length > 0;
 
