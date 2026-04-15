@@ -156,6 +156,7 @@ def get_market_alerts(db: Session):
 
         selected_alerts.sort(key=lambda a: order.get(a["type"], 3))
         return {
+            "success": True,
             "alerts": selected_alerts,
             "count": len(selected_alerts),
             "max_alerts": MAX_ALERTS,
@@ -164,6 +165,8 @@ def get_market_alerts(db: Session):
         }
     except Exception as e:
         return {
+
+            "success": False,
             "alerts": [],
             "count": 0,
             "max_alerts": MAX_ALERTS,
