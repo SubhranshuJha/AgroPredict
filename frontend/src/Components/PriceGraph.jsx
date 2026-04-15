@@ -27,8 +27,6 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
     .filter(item => item.commodity.trim() === commodityName.trim())
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  console.log(rawPredictions)
-
   // color chose for historical data
   let trendColor = "#64748b";
   if (rawHistorical.length >= 2) {
@@ -48,7 +46,6 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
     if (endPred > startPred) predictTrendColor = "#34d399";
     else if (endPred < startPred) predictTrendColor = "#f87171";
   }
-
   // combine historical and prediction data 
   const chartData = [
     ...rawHistorical.map((item, index) => {
@@ -71,6 +68,7 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
       type: 'predictions'
     }))
   ];
+  
 
   const hasPrediction = rawPredictions.length > 0;
 
