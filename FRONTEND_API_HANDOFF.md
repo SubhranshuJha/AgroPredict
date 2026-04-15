@@ -80,10 +80,9 @@ Example response:
 
 ```json
 {
+  "success":True
   "alerts": [
     {
-      "id": "128_drop7",
-      "source_id": 128,
       "type": "danger",
       "commodity": "Wheat",
       "title": "Wheat: Sharp 7-day fall",
@@ -96,6 +95,21 @@ Example response:
   "as_of_date": "2026-04-12",
   "scope": "general_market_alerts"
 }
+
+On failure the res will have the success filed false with empty alerts array 
+Example response:
+
+```json
+{
+  "success":False 
+  "alerts": [],
+  "count": 0,
+  "max_alerts": 10,
+  "as_of_date": None,
+  "scope": "general_market_alerts" ,
+  "error" : e 
+}
+
 ```
 
 Field notes:
