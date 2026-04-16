@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import PriceGraph from '../Components/PriceGraph'
 import iconMap from '../assets/map.json'
@@ -16,7 +16,12 @@ function CommodityInfo() {
 
   const { data, loading } = useFetchData()
 
-  const stats = getCommodityStats(data, commodityName, selectedDays)
+
+  // const stats = getCommodityStats(data, commodityName, selectedDays)
+  const stats = useMemo(() =>
+    getCommodityStats(data, commodityName, selectedDays),
+    [data, commodityName, selectedDays]
+  );
 
   const iconName = iconMap[commodityName?.trim()] || "default"
 
@@ -86,11 +91,10 @@ function CommodityInfo() {
 
             <Card
               title="Current Price"
-              value={`₹${
-                stats?.currentPrice
-                  ? stats.currentPrice.toFixed(2)
-                  : 0
-              }`}
+              value={`₹${stats?.currentPrice
+                ? stats.currentPrice.toFixed(2)
+                : 0
+                }`}
             />
 
             <Card

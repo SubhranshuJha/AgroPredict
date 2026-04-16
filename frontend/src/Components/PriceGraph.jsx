@@ -19,13 +19,15 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
   // filter historical data
   const rawHistorical = (data?.historical || [])
     .filter(item => item.commodity.trim() === commodityName.trim())
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .map(item => ({ ...item, dateObj: new Date(item.date) }))
+    .sort((a, b) => a.dateObj - b.dateObj)
     .slice(-selectedDays);
 
   // filter prediction data 
   const rawPredictions = (data?.predictions || [])
     .filter(item => item.commodity.trim() === commodityName.trim())
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+    .map(item => ({ ...item, dateObj: new Date(item.date) }))
+    .sort((a, b) => a.dateObj - b.dateObj)
 
   // color chose for historical data
   let trendColor = "#64748b";
@@ -68,7 +70,7 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
       type: 'predictions'
     }))
   ];
-  
+
 
   const hasPrediction = rawPredictions.length > 0;
 

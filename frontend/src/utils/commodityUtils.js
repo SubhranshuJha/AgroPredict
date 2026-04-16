@@ -2,12 +2,14 @@ export const getCommodityStats = (data, commodityName, selectedDays = 7) => {
 
   const rawHistorical = (data?.historical || [])
     .filter(item => item.commodity.trim() === commodityName.trim())
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .slice(-selectedDays) 
+    .map(item => ({ ...item, dateObj: new Date(item.date) }))
+    .sort((a, b) => a.dateObj - b.dateObj)
+    .slice(-selectedDays)
 
   const rawPredictions = (data?.predictions || [])
     .filter(item => item.commodity.trim() === commodityName.trim())
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .map(item => ({ ...item, dateObj: new Date(item.date) }))
+    .sort((a, b) => a.dateObj - b.dateObj)
 
   if (rawHistorical.length === 0) {
     return {
@@ -21,14 +23,17 @@ export const getCommodityStats = (data, commodityName, selectedDays = 7) => {
     }
   }
 
-  const hightestPrice = [...rawHistorical].sort((a,b) => b.avg_price - a.avg_price)[0].avg_price
-  const lowestPrice = [...rawHistorical].sort((a,b) => b.avg_price - a.avg_price)[rawHistorical.length - 1].avg_price
 
+  const prices = rawHistorical.map(item => item.avg_price)
+  const highestPrice = Math.max(...prices)
+  const lowestPrice = Math.min(...prices)
 
 
   // ===== CURRENT & PREVIOUS =====
   const latest = rawHistorical[rawHistorical.length - 1]
-  const previous = rawHistorical[rawHistorical.length - 2]
+  // const previous = rawHistorical[rawHistorical.length - 2]
+  // safety if selected days=1
+  const previous = rawHistorical.length > 1 ? [rawHistorical.length - 2] : null;
 
   const currentPrice = latest?.avg_price || 0
   const prevPrice = previous?.avg_price || 0
@@ -45,7 +50,6 @@ export const getCommodityStats = (data, commodityName, selectedDays = 7) => {
     : null
 
   // ===== VOLATILITY =====
-  const prices = rawHistorical.map(item => item.avg_price)
 
   let volatility = null
   let mean = 0
@@ -73,7 +77,7 @@ export const getCommodityStats = (data, commodityName, selectedDays = 7) => {
     volatility,
     rawPredictions,
     mean,
-    hightestPrice,
+    highestPrice,
     lowestPrice
   }
 }
