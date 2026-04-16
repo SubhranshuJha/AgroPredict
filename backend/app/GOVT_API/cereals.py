@@ -6,8 +6,8 @@ url = "https://api.agmarknet.gov.in/v1/all-type-report/all-type-report-agm"
 
 params = {
     "type": 2,
-    "from_date": "2026-04-11",
-    "to_date": "2026-04-11",
+    "from_date": "2026-04-15",
+    "to_date": "2026-04-15",
     "msp": 0,
     "period": "date",
     "group": "[1]",
