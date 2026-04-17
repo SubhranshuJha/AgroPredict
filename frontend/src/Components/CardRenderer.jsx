@@ -261,13 +261,7 @@ function CardRenderer() {
                 >
                   Today
                 </button>
-                {/* <div className="flex m-3 gap-4 max-h-fit w-full items-center justify-center"> */}
-                {/* <button
-          className="border border-amber-400 px-3 mx-3 py-2 rounded-2xl bg-blue-500/50"
-          onClick={fetchData}
-        >
-          Refresh Data
-        </button> */}
+                
                 {/* </div> */}
               </div>
             </div>

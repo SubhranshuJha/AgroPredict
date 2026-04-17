@@ -12,7 +12,7 @@ function PredictionTable({ predictions = [], currentPrice = '' }) {
     if (prev) {
       change = item.predicted_price - prev.predicted_price
       changePercent = ((change / prev.predicted_price) * 100).toFixed(2)
-    } 
+    }
     else if (currentPrice) {
       change = item.predicted_price - currentPrice
       changePercent = ((change / item.predicted_price) * 100).toFixed(2)
@@ -89,10 +89,9 @@ function PredictionTable({ predictions = [], currentPrice = '' }) {
 
                     {/* CHANGE */}
                     <td
-                      className={`py-2 ${
-                        isUp ? "text-green-500 dark:text-green-400" :
+                      className={`py-2 ${isUp ? "text-green-500 dark:text-green-400" :
                         isDown ? "text-red-500 dark:text-red-400" : ""
-                      }`}
+                        }`}
                     >
                       {item.change != null
                         ? `${isUp ? "+" : ""}${item.change.toFixed(2)}`
@@ -101,10 +100,9 @@ function PredictionTable({ predictions = [], currentPrice = '' }) {
 
                     {/* % CHANGE */}
                     <td
-                      className={`py-2 ${
-                        isUp ? "text-green-500 dark:text-green-400" :
+                      className={`py-2 ${isUp ? "text-green-500 dark:text-green-400" :
                         isDown ? "text-red-500 dark:text-red-400" : ""
-                      }`}
+                        }`}
                     >
                       {item.changePercent != null
                         ? `${item.changePercent}%`
@@ -113,13 +111,15 @@ function PredictionTable({ predictions = [], currentPrice = '' }) {
 
                     {/* TREND */}
                     <td
-                      className={`py-2 ${
-                        isUp ? "text-green-500 dark:text-green-400" :
+                      className={`py-2 ${isUp ? "text-green-500 dark:text-green-400" :
                         isDown ? "text-red-500 dark:text-red-400" :
-                        "text-gray-500 dark:text-gray-400"
-                      }`}
+                          "text-gray-500 dark:text-gray-400"
+                        }`}
                     >
-                      {isUp ? "📈" : isDown ? "📉" : "—"}
+                      {isUp ?
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 17l6-6 4 4 7-7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M14 8h4v4"></path></svg> : isDown
+                          ? <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7l6 6 4-4 7 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M14 16h4v-4"></path></svg>
+                          : "—"}
                     </td>
 
                   </tr>

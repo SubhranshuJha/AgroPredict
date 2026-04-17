@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import PriceGraph from '../Components/PriceGraph'
 import iconMap from '../assets/map.json'
 import { useFetchData } from '../contexts/Data'
-import { getCommodityStats } from '../utils/commodityUtils'
+import { useCommodityStats } from '../contexts/commodityUtils'
 import PredictionTable from '../Components/PredictionTable'
 import MarketInsights from '../Components/MarketInsights'
 
@@ -14,9 +14,9 @@ function CommodityInfo() {
 
   const [selectedDays, setSelectedDays] = useState(7)
 
-  const { data, loading } = useFetchData()
+  const {  dataLoading } = useFetchData()
 
-  const stats = getCommodityStats(data, commodityName, selectedDays)
+  const stats = useCommodityStats(commodityName, selectedDays)
 
   const iconName = iconMap[commodityName?.trim()] || "default"
 
@@ -75,7 +75,7 @@ function CommodityInfo() {
       </div>
 
       {/* LOADING */}
-      {loading ? (
+      {dataLoading ? (
         <div className="text-gray-500 dark:text-gray-400">
           Loading...
         </div>
@@ -86,11 +86,10 @@ function CommodityInfo() {
 
             <Card
               title="Current Price"
-              value={`₹${
-                stats?.currentPrice
-                  ? stats.currentPrice.toFixed(2)
-                  : 0
-              }`}
+              value={`₹${stats?.currentPrice
+                ? stats.currentPrice.toFixed(2)
+                : 0
+                }`}
             />
 
             <Card
