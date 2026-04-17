@@ -28,12 +28,11 @@ export const getCommodityStats = (data, commodityName, selectedDays = 7) => {
   const highestPrice = Math.max(...prices)
   const lowestPrice = Math.min(...prices)
 
-
   // ===== CURRENT & PREVIOUS =====
   const latest = rawHistorical[rawHistorical.length - 1]
   // const previous = rawHistorical[rawHistorical.length - 2]
   // safety if selected days=1
-  const previous = rawHistorical.length > 1 ? [rawHistorical.length - 2] : null;
+  const previous = rawHistorical.length > 1 ? rawHistorical[rawHistorical.length - 2] : null;
 
   const currentPrice = latest?.avg_price || 0
   const prevPrice = previous?.avg_price || 0

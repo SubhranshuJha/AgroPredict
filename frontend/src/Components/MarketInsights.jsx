@@ -22,7 +22,7 @@ function MarketInsights({ stats, changeValue, selectedDays }) {
             </div>
         )
     }
-
+    
     return (
         <div className="w-full">
 
@@ -75,7 +75,7 @@ function MarketInsights({ stats, changeValue, selectedDays }) {
                     />
                     <Insight
                         label="Highest Price"
-                        value={`₹${stats?.hightestPrice?.toFixed(2)}`}
+                        value={`₹${stats?.highestPrice?.toFixed(2)}`}
                     />
                     <Insight
                         label="Lowest Price"
@@ -86,11 +86,11 @@ function MarketInsights({ stats, changeValue, selectedDays }) {
 <div className="pt-4">
 
   {stats?.lowestPrice !== undefined &&
-   stats?.hightestPrice !== undefined &&
+   stats?.highestPrice !== undefined &&
    stats?.currentPrice !== undefined && (() => {
 
     const min = stats.lowestPrice
-    const max = stats.hightestPrice
+    const max = stats.highestPrice
     const current = stats.currentPrice
 
     const percentage = max !== min
