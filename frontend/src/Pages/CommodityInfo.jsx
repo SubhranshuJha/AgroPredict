@@ -17,11 +17,7 @@ function CommodityInfo() {
   const { data, dataLoading } = useFetchData()
 
 
-  // const stats = getCommodityStats(data, commodityName, selectedDays)
-  const stats = useMemo(() =>
-    useCommodityStats( commodityName, selectedDays),
-    [ commodityName, selectedDays]
-  );
+  const stats = useCommodityStats(commodityName, selectedDays)
 
   const iconName = iconMap[commodityName?.trim()] || "default"
 
