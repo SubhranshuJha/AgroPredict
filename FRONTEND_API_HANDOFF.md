@@ -97,6 +97,7 @@ Example response:
 }
 
 On failure the res will have the success filed false with empty alerts array 
+
 Example response:
 
 ```json

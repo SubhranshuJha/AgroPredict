@@ -7,7 +7,7 @@ from app.models.historical import HistoricalData
 from app.models.prediction import Prediction
 
 
-def save_historical_data(db: Session, df):
+def save_historical_data(db: Session, df, model_class=HistoricalData):
     normalized_df = df.rename(columns={
         "Date": "date",
         "Commodity": "commodity",
@@ -44,9 +44,9 @@ def save_historical_data(db: Session, df):
     for row in records:
         incoming_by_date.setdefault(row["date"], set()).add(row["commodity"])
 
-    existing_rows = db.query(HistoricalData).filter(
-        HistoricalData.date >= min_date,
-        HistoricalData.date <= max_date,
+    existing_rows = db.query(model_class).filter(
+        model_class.date >= min_date,
+        model_class.date <= max_date,
     ).all()
     # If duplicates already exist in DB for same (date, commodity), keep one and delete others.
     existing_map = {}
@@ -78,7 +78,7 @@ def save_historical_data(db: Session, df):
         key = (row["date"], row["commodity"])
         existing = existing_map.get(key)
         if existing is None:
-            db.add(HistoricalData(**row))
+            db.add(model_class(**row))
         else:
             # Keep same-day commodities fresh when source prices are revised.
             existing.avg_price = row["avg_price"]
@@ -92,20 +92,21 @@ def save_prediction_data(
     db: Session,
     prediction: dict[str, float],
     prediction_date: date | None = None,
+    model_class=Prediction,
 ):
     target_date = prediction_date or date.today()
 
     for target_name, price in prediction.items():
         commodity = target_name.removesuffix("_Modal")
-        existing = db.query(Prediction).filter(
-            Prediction.date == target_date,
-            Prediction.commodity == commodity
+        existing = db.query(model_class).filter(
+            model_class.date == target_date,
+            model_class.commodity == commodity
         ).first()
 
         if existing:
             existing.predicted_price = float(price)
         else:
-            db.add(Prediction(
+            db.add(model_class(
                 date=target_date,
                 commodity=commodity,
                 predicted_price=float(price)

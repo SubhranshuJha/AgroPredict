@@ -6,17 +6,16 @@ from tensorflow.keras.models import load_model
 ML_DIR = Path(__file__).resolve().parent / "ml"
 
 # Load model
-model = load_model(ML_DIR / "model.keras", compile=False)
-
+model = load_model(r"D:\AgroPredict\AgroPredict_Dev\AgroPredict\ML_model\best_model_Cereals (1).keras" , compile=False)
 print("✅ Model loaded successfully")
 print("Input shape:", model.input_shape)
 print("Output shape:", model.output_shape)
 
 # Load config
-config = joblib.load(ML_DIR / "columns.pkl")
+# config = joblib.load(r"D:\AgroPredict\AgroPredict_Dev\AgroPredict\ML_model\columns (3).pkl")
 
-feature_cols = config["feature_cols"]
-good_comms = config["good_commodities"]
+# feature_cols = config["feature_cols"]
+# good_comms = config["good_commodities"]
 
-# print("Feature columns:", feature_cols)
-print("Output commodities:", good_comms)
+# # print("Feature columns:", feature_cols)
+# print("Output commodities:", good_comms)

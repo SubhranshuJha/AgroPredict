@@ -6,6 +6,51 @@ import requests
 API_URL = "https://api.agmarknet.gov.in/v1/all-type-report/all-type-report-agm"
 MAX_FETCH_PAGES = 100
 MAX_FETCH_SECONDS = 90
+CATEGORY_PAYLOADS = {
+    "cereals": {
+        "type": 2,
+        "group": "[1]",
+        "commodity": "[99999]",
+        "state": "[99999]",
+        "district": "[]",
+        "market": "[]",
+        "options": 3,
+        "limit": 1000,
+    },
+    "fruits": {
+        "type": 1,
+        "group": [5],
+        "commodity": [
+            303, 17, 19, 304, 464, 22, 156, 58, 424, 153, 155,
+            157, 299, 20, 64, 18, 59, 21, 160, 529, 60, 492,
+        ],
+        "state": [],
+        "district": [],
+        "market": [],
+        "options": "3",
+        "limit": 1000,
+        "itemsPerPage": 1000,
+        "from": "/alltypeofreportmainmenu",
+    },
+    "vegetables": {
+        "type": 1,
+        "group": [6],
+        "commodity": [
+            129, 420, 71, 67, 68, 32, 416, 126, 136, 125, 31, 74,
+            39, 131, 415, 75, 140, 247, 53, 298, 25, 87, 73, 306,
+            62, 292, 127, 261, 253, 255, 288, 500, 23, 307, 264,
+            24, 254, 70, 133, 422, 290, 523, 251, 124, 145, 297,
+            65, 260, 248,
+        ],
+        "state": [],
+        "district": [],
+        "market": [],
+        "options": "3",
+        "limit": 1000,
+        "itemsPerPage": 1000,
+        "from": "/pricearrivalreportlist",
+    },
+}
 
 
 class FetchDataError(Exception):
@@ -23,28 +68,25 @@ def get_date_range(last_date):
     return from_date, today
 
 
-def fetch_data(from_date, to_date):
+def fetch_data(from_date, to_date, category="cereals"):
     if from_date > to_date:
         return pd.DataFrame()
+
+    category_payload = CATEGORY_PAYLOADS.get(category)
+    if category_payload is None:
+        raise FetchDataError(f"Unknown category: {category}")
 
     all_data = []
     start_time = datetime.now()
 
     payload = {
-        "type": 2,
         "from_date": from_date.strftime("%Y-%m-%d"),
         "to_date": to_date.strftime("%Y-%m-%d"),
         "msp": 0,
         "period": "date",
-        "group": "[1]",
-        "commodity": "[99999]",
-        "state": "[99999]",
-        "district": "[]",
-        "market": "[]",
         "page": 1,
-        "options": 3,
-        "limit": 1000
     }
+    payload.update(category_payload)
 
     headers = {
         "User-Agent": "Mozilla/5.0",

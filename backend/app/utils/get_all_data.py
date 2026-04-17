@@ -4,12 +4,12 @@ from app.models.historical import HistoricalData
 from app.models.prediction import Prediction
 
 
-def get_all_data(db, prediction_days=1):
-    latest_row = db.query(HistoricalData).order_by(HistoricalData.date.desc()).first()
+def get_all_data(db, prediction_days=1, historical_model=HistoricalData, prediction_model=Prediction):
+    latest_row = db.query(historical_model).order_by(historical_model.date.desc()).first()
     if latest_row:
         cutoff_date = latest_row.date - timedelta(days=29)
-        hist = db.query(HistoricalData).filter(
-            HistoricalData.date >= cutoff_date
+        hist = db.query(historical_model).filter(
+            historical_model.date >= cutoff_date
         ).all()
     else:
         hist = []
@@ -26,10 +26,10 @@ def get_all_data(db, prediction_days=1):
     if latest_row:
         start_pred_date = latest_row.date + timedelta(days=1)
         end_pred_date = latest_row.date + timedelta(days=prediction_days)
-        preds = db.query(Prediction).filter(
-            Prediction.date >= start_pred_date,
-            Prediction.date <= end_pred_date
-        ).order_by(Prediction.date.asc(), Prediction.commodity.asc()).all()
+        preds = db.query(prediction_model).filter(
+            prediction_model.date >= start_pred_date,
+            prediction_model.date <= end_pred_date
+        ).order_by(prediction_model.date.asc(), prediction_model.commodity.asc()).all()
     else:
         preds = []
 

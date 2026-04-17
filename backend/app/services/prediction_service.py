@@ -3,67 +3,119 @@ import joblib
 import numpy as np
 import pandas as pd
 from tensorflow.keras.models import load_model #type = ignore
-from app.services.preprocess_service import create_wide_dataframe
+from app.services.preprocess_service import add_time_series_features, create_wide_dataframe
 
 ML_DIR = Path(__file__).resolve().parents[1] / "ml"
 
-# Load once
-model = load_model(ML_DIR / "model.keras")
-feature_scaler = joblib.load(ML_DIR / "feature_scaler.pkl")
-target_scaler = joblib.load(ML_DIR / "target_scaler.pkl")
-config = joblib.load(ML_DIR / "columns.pkl")
+CATEGORY_MODELS = {
+    "cereals": {
+        "folder": "cereals",
+        "model": "model_cereals.keras",
+        "feature_scaler": "feature_scaler_cereals.pkl",
+        "target_scaler": "target_scaler_cereals.pkl",
+    },
+    "fruits": {
+        "folder": "fruits",
+        "model": "model_Fruits.keras",
+        "feature_scaler": "feature_scaler_Fruits.pkl",
+        "target_scaler": "target_scaler_Fruits.pkl",
+    },
+    "vegetables": {
+        "folder": "vegetable",
+        "model": "model_Vegetables.keras",
+        "feature_scaler": "feature_scaler_Vegetables.pkl",
+        "target_scaler": "target_scaler_Vegetables.pkl",
+    },
+}
 
-feature_cols = config["feature_cols"]
-good_comms = config["good_commodities"]
+_loaded_categories = {}
 
 
-def prepare_input(df):
-    # Filter commodities   
-    df = df[df["Commodity"].isin(good_comms)]
+def _load_category(category):
+    if category in _loaded_categories:
+        return _loaded_categories[category]
 
-    # Convert to wide format
-    wide_df = create_wide_dataframe(df)
+    model_config = CATEGORY_MODELS.get(category)
+    if model_config is None:
+        raise ValueError(f"Unknown prediction category: {category}")
 
-    # Match EXACT training columns
-    wide_df = wide_df.reindex(columns=feature_cols, fill_value=0)
+    folder = ML_DIR / model_config["folder"]
+    model = load_model(folder / model_config["model"], compile=False)
+    feature_scaler = joblib.load(folder / model_config["feature_scaler"])
+    target_scaler = joblib.load(folder / model_config["target_scaler"])
 
-    # Scale
+    feature_cols = list(feature_scaler.feature_names_in_)
+    target_cols = list(target_scaler.feature_names_in_)
+    commodities = [col.removesuffix("_Modal") for col in target_cols]
+
+    loaded = {
+        "model": model,
+        "feature_scaler": feature_scaler,
+        "target_scaler": target_scaler,
+        "feature_cols": feature_cols,
+        "target_cols": target_cols,
+        "commodities": commodities,
+        "lookback": model.input_shape[1] or 14,
+    }
+    _loaded_categories[category] = loaded
+    return loaded
+
+
+def prepare_input(df, category="cereals"):
+    loaded = _load_category(category)
+    df = df[df["Commodity"].isin(loaded["commodities"])]
+    wide_df = add_time_series_features(create_wide_dataframe(df))
+    wide_df = wide_df.reindex(columns=loaded["feature_cols"], fill_value=0)
+    feature_scaler = loaded["feature_scaler"]
     scaled_data = feature_scaler.transform(wide_df)
 
     return scaled_data
 
 
-def predict_next_day(df):
-    return predict_next_days(df, days=1)[0]
+def get_category_commodities(category="cereals"):
+    return _load_category(category)["commodities"]
 
 
-def predict_next_days(df, days=1):
+def predict_next_day(df, category="cereals"):
+    return predict_next_days(df, days=1, category=category)[0]
+
+
+def predict_next_days(df, days=1, category="cereals"):
     if days < 1:
         raise ValueError("days must be at least 1")
 
+    loaded = _load_category(category)
+    model = loaded["model"]
+    feature_scaler = loaded["feature_scaler"]
+    target_scaler = loaded["target_scaler"]
+    feature_cols = loaded["feature_cols"]
+    target_cols = loaded["target_cols"]
+    commodities = loaded["commodities"]
+    lookback = loaded["lookback"]
+
     # Filter commodities and convert to wide format in raw (unscaled) space
-    filtered_df = df[df["Commodity"].isin(good_comms)]
-    raw_wide_df = create_wide_dataframe(filtered_df)
-    raw_wide_df = raw_wide_df.reindex(columns=feature_cols, fill_value=0)
+    filtered_df = df[df["Commodity"].isin(commodities)]
+    raw_wide_df = create_wide_dataframe(filtered_df).astype(float)
 
-    if len(raw_wide_df) < 14:
-        raise Exception("Not enough data for prediction (need 14 days)")
+    if len(raw_wide_df) < lookback:
+        raise Exception(f"Not enough data for prediction (need {lookback} days)")
 
-    target_cols = config["target_cols"]
     future_predictions = []
 
     for _ in range(days):
         # Scale only at prediction time so appended rows remain in raw space
-        scaled_data = feature_scaler.transform(raw_wide_df)
-        last_14_days = scaled_data[-14:]
-        X = np.array([last_14_days])
+        feature_df = add_time_series_features(raw_wide_df)
+        feature_df = feature_df.reindex(columns=feature_cols, fill_value=0)
+        scaled_data = feature_scaler.transform(feature_df)
+        last_window = scaled_data[-lookback:]
+        X = np.array([last_window])
 
         pred_scaled = model.predict(X, verbose=0)
         pred = target_scaler.inverse_transform(pred_scaled)[0]
         prediction = dict(zip(target_cols, pred))
         future_predictions.append(prediction)
 
-        # Build the next-day feature row by carrying forward last known values,
+        # Build the next-day raw row by carrying forward last known values,
         # then replacing modal columns with predicted values.
         next_row = raw_wide_df.iloc[-1].copy()
         for col_name, value in prediction.items():
