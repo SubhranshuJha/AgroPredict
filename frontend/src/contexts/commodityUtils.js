@@ -1,5 +1,5 @@
 import { useFetchData } from "./Data";
-
+import { useMemo } from "react";
 export const useCommodityStats = (commodityName, selectedDays = 7) => {
   const { data } = useFetchData()
 
