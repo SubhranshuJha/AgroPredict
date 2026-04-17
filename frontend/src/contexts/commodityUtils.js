@@ -1,8 +1,8 @@
-import { useMemo } from "react";
 import { useFetchData } from "./Data";
 
-export const useCommodityStats = async ( commodityName, selectedDays = 7) => {
-  const {data} = await useFetchData()  
+export const useCommodityStats = ( commodityName, selectedDays = 7) => {
+
+  const {data} = useFetchData()  
 
 
   const rawHistorical = (data?.historical || [])
@@ -10,7 +10,7 @@ export const useCommodityStats = async ( commodityName, selectedDays = 7) => {
     .map(item => ({ ...item, dateObj: new Date(item.date) }))
     .sort((a, b) => a.dateObj - b.dateObj)
     .slice(-selectedDays)
-    console.log(rawHistorical);
+
     
 
   const rawPredictions = (data?.predictions || [])
