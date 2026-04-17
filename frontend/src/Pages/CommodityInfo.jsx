@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import PriceGraph from '../Components/PriceGraph'
 import iconMap from '../assets/map.json'
 import { useFetchData } from '../contexts/Data'
-import { getCommodityStats } from '../utils/commodityUtils'
+import { useCommodityStats } from '../contexts/commodityUtils'
 import PredictionTable from '../Components/PredictionTable'
 import MarketInsights from '../Components/MarketInsights'
 
@@ -14,13 +14,13 @@ function CommodityInfo() {
 
   const [selectedDays, setSelectedDays] = useState(7)
 
-  const { data, loading } = useFetchData()
+  const { data, dataLoading } = useFetchData()
 
 
   // const stats = getCommodityStats(data, commodityName, selectedDays)
   const stats = useMemo(() =>
-    getCommodityStats(data, commodityName, selectedDays),
-    [data, commodityName, selectedDays]
+    useCommodityStats( commodityName, selectedDays),
+    [ commodityName, selectedDays]
   );
 
   const iconName = iconMap[commodityName?.trim()] || "default"
@@ -80,7 +80,7 @@ function CommodityInfo() {
       </div>
 
       {/* LOADING */}
-      {loading ? (
+      {dataLoading ? (
         <div className="text-gray-500 dark:text-gray-400">
           Loading...
         </div>
