@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useFetchData } from "./Data";
 
 export const useCommodityStats = (commodityName, selectedDays = 7) => {
