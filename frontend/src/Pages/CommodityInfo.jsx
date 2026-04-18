@@ -129,7 +129,8 @@ function CommodityInfo() {
               <div className="lg:col-span-2 space-y-8">
 
                 <PriceGraph
-                  commodityName={commodityName}
+                  commodityType={commodity_Type}
+                commodityName={commodityName}
                   selectedDays={selectedDays}
                   setSelectedDays={setSelectedDays}
                 />
@@ -155,83 +156,7 @@ function CommodityInfo() {
         )}
       </div>
 
-      {/* LOADING */}
-      {dataLoading ? (
-        <div className="text-gray-500 dark:text-gray-400">
-          Loading...
-        </div>
-      ) : (
-        <>
-          {/* STATS CARDS */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-
-            <Card
-              title="Current Price"
-              value={`₹${stats?.currentPrice
-                ? stats.currentPrice.toFixed(2)
-                : 0
-                }`}
-            />
-
-            <Card
-              title="24H Change"
-              value={changeValue}
-              green={stats?.change > 0}
-              red={stats?.change < 0}
-            />
-
-            <Card
-              title="Predicted Price"
-              value={
-                stats?.predict?.predicted_price
-                  ? `₹${stats.predict.predicted_price.toFixed(2)}`
-                  : "-"
-              }
-            />
-
-            <Card
-              title="Volatility"
-              value={
-                stats?.volatility !== null
-                  ? `${stats.volatility}%`
-                  : "-"
-              }
-            />
-
-          </div>
-
-          {/* MAIN SECTION */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-            {/* GRAPH */}
-            <div className="lg:col-span-2 space-y-6">
-
-              <PriceGraph
-                commodityType={commodity_Type}
-                commodityName={commodityName}
-                selectedDays={selectedDays}
-                setSelectedDays={setSelectedDays}
-              />
-
-              <PredictionTable
-                predictions={stats?.rawPredictions}
-                currentPrice={stats?.currentPrice}
-              />
-
-            </div>
-
-            {/* MARKET INSIGHTS */}
-            <div className="w-full">
-              <MarketInsights
-                stats={stats}
-                changeValue={changeValue}
-                selectedDays={selectedDays}
-              />
-            </div>
-
-          </div>
-        </>
-      )}
+      
     </div>
   )
 }
