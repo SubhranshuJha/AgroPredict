@@ -15,6 +15,7 @@ function ThemeButton() {
           transition-colors duration-300
           hover:ring-4 hover:ring-indigo-500/10
           active:scale-95
+          hover:cursor-pointer
         "
       >
         <span className={`

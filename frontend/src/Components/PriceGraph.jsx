@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   XAxis,
   YAxis,
@@ -12,9 +11,9 @@ import {
 } from 'recharts';
 import { useFetchData } from '../contexts/Data';
 
-const PriceGraph = ({ commodityName = "Wheat" }) => {
+const PriceGraph = ({ commodityName = "Wheat", selectedDays, setSelectedDays }) => {
   const { data, dataLoading } = useFetchData();
-  const [selectedDays, setSelectedDays] = useState(7);
+  // const [selectedDays, setSelectedDays] = useState(7);
 
   // filter historical data
   const rawHistorical = (data?.historical || [])
@@ -48,6 +47,7 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
     if (endPred > startPred) predictTrendColor = "#34d399";
     else if (endPred < startPred) predictTrendColor = "#f87171";
   }
+
   // combine historical and prediction data 
   const chartData = [
     ...rawHistorical.map((item, index) => {
@@ -71,11 +71,10 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
     }))
   ];
 
-
   const hasPrediction = rawPredictions.length > 0;
 
   return (
-    <div className="w-full p-6 bg-white dark:bg-[#0b0e14] rounded-3xl shadow shadow-taupe-600 border border-gray-200 dark:border-white/10 transition-all duration-300">
+    <div className="w-full p-6 bg-white dark:bg-[#111827] rounded-3xl shadow-md border border-[#d6d3cd] dark:border-white/10 transition-all duration-300">
 
       {dataLoading ? ("loader") : (
         chartData.length > 0 ? (
@@ -89,38 +88,40 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
 
               <div className="flex items-center gap-4">
 
-                {hasPrediction ? (<div className="flex items-center gap-2 relative group cursor-pointer">
-                  <span
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: predictTrendColor }}
-                  ></span>
+                {hasPrediction ? (
+                  <div className="flex items-center gap-2 relative group cursor-pointer">
+                    <span
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: predictTrendColor }}
+                    ></span>
 
-                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                    7D Forecast
-                  </span>
+                    <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">
+                      7D Forecast
+                    </span>
 
-                  <div className="absolute text-[14px] top-6 left-1/2 -translate-x-1/2 hidden group-hover:block bg-black text-white text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap z-50">
-                    <div className="flex items-center gap-2 ">
-                      <span className="w-2 h-2 bg-green-400 rounded-full"></span> Increase
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-red-400 rounded-full"></span> Decrease
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-gray-400 rounded-full"></span> Stable
+                    <div className="absolute text-[14px] top-6 left-1/2 -translate-x-1/2 hidden group-hover:block bg-black text-white text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap z-50">
+                      <div className="flex items-center gap-2 ">
+                        <span className="w-2 h-2 bg-green-400 rounded-full"></span> Increase
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-red-400 rounded-full"></span> Decrease
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-gray-400 rounded-full"></span> Stable
+                      </div>
                     </div>
                   </div>
-                </div>) :
-                  (
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                      Prediction Not Available
-                    </span>
-                  )}
+                ) : (
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    Prediction Not Available
+                  </span>
+                )}
+
                 <div className="relative">
                   <select
                     value={selectedDays}
                     onChange={(e) => setSelectedDays(Number(e.target.value))}
-                    className="appearance-none bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-200 py-2 px-4 pr-10 rounded-xl font-bold text-sm border border-transparent focus:border-emerald-500 outline-none cursor-pointer transition-all"
+                    className="appearance-none bg-gray-200/10 dark:bg-slate-800 text-gray-700 dark:text-gray-200 py-2 px-4 pr-10 rounded-xl font-bold text-sm border border-[#d6d3cd] dark:border-transparent focus:border-emerald-500 outline-none cursor-pointer transition-all"
                   >
                     <option value="7">Last 7 days</option>
                     <option value="15">Last 15 days</option>
@@ -132,6 +133,7 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
                     </svg>
                   </div>
                 </div>
+
               </div>
             </div>
 
@@ -157,12 +159,6 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
                     tickLine={false}
                     tick={{ fill: '#888888', fontSize: 11, fontWeight: 'bold' }}
                     dy={15}
-                    label={{
-                      value: "Date",
-                      position: "bottom",
-                      offset: 20,
-                      style: { fill: '#888888', fontSize: 12, fontWeight: 'bold' }
-                    }}
                   />
                   <YAxis
                     domain={['auto', 'auto']}
@@ -170,29 +166,15 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
                     tickLine={false}
                     tick={{ fill: '#888888', fontSize: 11, fontWeight: 'bold' }}
                     tickFormatter={(value) => `₹${(value / 1000).toFixed(2)}k`}
-                    label={{
-                      value: "Price",
-                      angle: -90,
-                      position: "insideLeft",
-                      style: { fill: '#888888', fontSize: 12, fontWeight: 'bold' }
-                    }}
                   />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#111827',
                       border: '1px solid rgba(255,255,255,0.1)',
                       borderRadius: '16px',
-                      color: '#fff',
-                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)'
-                    }}
-                    itemStyle={{ fontWeight: 'bold' }}
-                    formatter={(value, name, props) => {
-                      const { price } = props.payload;
-                      if (name === "prediction" && price !== undefined) return [null];
-                      return [`₹${Number(value).toFixed(2)}`, name === "price" ? "Actual Price" : "Predicted Price"];
+                      color: '#fff'
                     }}
                   />
-                  {/* HISTORICAL AREA */}
                   <Area
                     type="monotone"
                     dataKey="price"
@@ -203,7 +185,6 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
                     animationDuration={1000}
                     connectNulls
                   />
-                  {/* PREDICTED DASHED LINE */}
                   <Area
                     type="monotone"
                     dataKey="prediction"
@@ -211,15 +192,6 @@ const PriceGraph = ({ commodityName = "Wheat" }) => {
                     strokeWidth={3}
                     strokeDasharray="5 5"
                     fill="transparent"
-                    dot={(props) => {
-                      const { payload, cx, cy } = props;
-                      if (payload.isBridge || payload.prediction === null || payload.prediction === undefined) {
-                        return null;
-                      }
-                      return (
-                        <circle cx={cx} cy={cy} r={4} fill={predictTrendColor} strokeWidth={2} />
-                      );
-                    }}
                     connectNulls
                   />
                 </AreaChart>

@@ -4,7 +4,7 @@ import HeatMap from '../Components/HeatMap'
 function OverView() {
   return (
       <>
-      <div className='m-3'>
+      <div className='px-6 md:px-10 py-10'>
       <HeatMap/>
 
       </div>

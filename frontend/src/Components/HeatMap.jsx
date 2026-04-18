@@ -39,9 +39,10 @@ const HeatMap = () => {
     const diff = todayPrice - yesterdayPrice;
     const percent = ((diff / yesterdayPrice) * 100);
 
-    let bgColor = "bg-slate-500 dark:bg-slate-700";
-    if (diff > 0) bgColor = "bg-green-500 dark:bg-green-600";
-    if (diff < 0) bgColor = "bg-red-500 dark:bg-red-600";
+let bgColor = "bg-slate-400 dark:bg-slate-600";
+
+if (diff > 0) bgColor = "bg-emerald-400 dark:bg-emerald-500";
+if (diff < 0) bgColor = "bg-red-400 dark:bg-red-500";
 
     return {
       name: commodity,
@@ -75,7 +76,7 @@ const HeatMap = () => {
   })
 
   return (
-    <div className="w-full flex flex-col gap-8 py-10 bg-white dark:bg-[#0b0e14] rounded-3xl shadow shadow-taupe-600 border border-gray-200 dark:border-white/5 transition-all">
+    <div className="w-full flex flex-col gap-8 py-10 bg-[#eceae6] dark:bg-[#0b0e14] rounded-3xl shadow-md border border-[#d6d3cd] dark:border-white/5 transition-all">
 
       <div className="flex flex-col md:flex-row justify-between items-center px-10 gap-6">
         <div className="text-center md:text-left">
@@ -92,7 +93,7 @@ const HeatMap = () => {
           <select
             value={sorted}
             onChange={(e) => setSorted(e.target.value)}
-            className="w-full appearance-none bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-200 py-3 px-6 pr-12 rounded-2xl font-black text-xs uppercase tracking-widest border-2 border-transparent focus:border-emerald-500 outline-none cursor-pointer transition-all shadow-md"
+            className="w-full appearance-none bg-[#e5e3df] dark:bg-slate-800 text-gray-700 dark:text-gray-200 py-3 px-6 pr-12 rounded-2xl font-black text-xs uppercase tracking-widest border border-[#d6d3cd] dark:border-transparent focus:border-emerald-500 outline-none cursor-pointer transition-all shadow-sm"
           >
             <option value="asc-percent">Percent: High to Low</option>
             <option value="desc-percent">Percent: Low to High</option>
@@ -107,7 +108,7 @@ const HeatMap = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl mx-auto  px-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl mx-auto px-10">
         {formattedData.length > 0 ? (
           sortedData.map((item, index) => (
             <Link
@@ -137,7 +138,7 @@ const HeatMap = () => {
             </Link >
           ))
         ) : (
-          <div className="col-span-full py-20 text-center text-gray-400 font-bold uppercase tracking-widest animate-pulse">
+          <div className="col-span-full py-20 text-center text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest animate-pulse">
             {dataLoading ? "Analyzing Market Data..." : "Data not found"}
           </div>
         )}

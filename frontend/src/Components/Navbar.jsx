@@ -10,30 +10,44 @@ function Navbar() {
   ]
 
   return (
-    <nav className='sticky top-0 z-50 mx-auto mt-4 w-full lg:max-w-7xl h-20 flex items-center justify-between px-8 bg-gray-100/90 dark:bg-slate-900/90 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl shadow-xl transition-all duration-300'>
-      <Link to={'/'} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-        <img src={Logo} alt="AgroPredict" className='h-10 w-16' />
-        <span className="text-xl font-black tracking-tighter dark:text-white hidden sm:block">
-          AGRO<span className="text-emerald-500">PREDICT</span>
+    <nav className='sticky top-4 z-50 mx-auto w-[95%] lg:max-w-6xl 
+    h-16 flex items-center justify-between 
+    px-6 lg:px-8
+    bg-[#ffffffcc] dark:bg-slate-900/80 backdrop-blur-xl 
+    border border-[#e0ddd7] dark:border-white/10 
+    rounded-2xl shadow-md'>
+
+      {/* LEFT */}
+      <Link to={'/'} className="flex items-center gap-3">
+        <img src={Logo} alt="AgroPredict" className='h-9 w-auto' />
+        <span className="text-lg font-bold tracking-tight text-gray-800 dark:text-white hidden sm:block">
+          AGRO<span className="text-[#2f855a] dark:text-emerald-400">PREDICT</span>
         </span>
       </Link>
 
-      <div className='flex items-center gap-3'>
+      {/* RIGHT */}
+      <div className='flex items-center gap-2 lg:gap-4'>
+
         {items.map((item, index) => (
           <Link
             key={index}
             to={item.path}
-            className='px-4 py-2 text-sm font-medium transition-all rounded-xl 
-                       text-gray-700 hover:bg-gray-200 
-                       dark:text-gray-200 dark:hover:bg-white/10 dark:border-white/10'
+            className='px-3 py-2 text-sm font-medium rounded-lg 
+            text-gray-700 hover:text-[#2f855a]
+            hover:bg-[#f1efe9] 
+            transition-all duration-200'
           >
             {item.name}
           </Link>
         ))}
 
-        <div className="h-6 w-px bg-gray-300 dark:bg-white/20 mx-2" />
+        {/* divider */}
+        <div className="hidden sm:block h-5 w-px bg-[#d6d3cd] dark:bg-white/20 mx-2" />
 
-        <ThemeButton />
+        <div className="ml-1">
+          <ThemeButton />
+        </div>
+
       </div>
     </nav>
   )
