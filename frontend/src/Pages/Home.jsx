@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import CardRenderer from "../Components/CardRenderer.jsx";
+import { CardRenderer } from "../Components";
 
 function Home() {
   return (
@@ -57,8 +57,7 @@ function Home() {
         </div>
 
       </section>
-
-{/* 
+      {/* 
       CARD SECTION
       <section className="px-6 md:px-20 pb-20">
         <h2 className="text-2xl font-semibold mb-6">Market Insights</h2>
@@ -66,8 +65,8 @@ function Home() {
       </section> */}
 
 
-{/* FEATURES SECTION */}
-<section className="px-6 md:px-20 pb-24">
+      {/* FEATURES SECTION */}
+      <section className="px-6 md:px-20 pb-24">
 
   <div className="text-center mb-16">
     <p className="text-xs tracking-widest text-gray-500 dark:text-white/40 mb-4">
@@ -79,7 +78,7 @@ function Home() {
     </h2>
   </div>
 
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
     {/* CARD 1 */}
     <div className="bg-[#eceae6] dark:bg-white/5 border border-[#d6d3cd] dark:border-white/10 rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all">
@@ -131,8 +130,8 @@ function Home() {
       </p>
     </div>
 
-  </div>
-</section>
+        </div>
+      </section>
     </div>
   );
 }

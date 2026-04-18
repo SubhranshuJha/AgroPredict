@@ -1,22 +1,20 @@
 import { useState, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import PriceGraph from '../Components/PriceGraph'
 import iconMap from '../assets/map.json'
 import { useFetchData } from '../contexts/Data'
-import { useCommodityStats } from '../contexts/commodityUtils'
-import PredictionTable from '../Components/PredictionTable'
-import MarketInsights from '../Components/MarketInsights'
-
+import { useCommodityStats } from '../hooks/commodityUtils'
+import { PriceGraph, PredictionTable, MarketInsights, BackBtn } from '../Components'
 function CommodityInfo() {
 
-  const { commodityId } = useParams()
+  const { commodity_Type, commodityId } = useParams()
+  const commodityType = decodeURIComponent(commodity_Type);
   const commodityName = decodeURIComponent(commodityId)
 
   const [selectedDays, setSelectedDays] = useState(7)
 
   const { dataLoading } = useFetchData()
 
-  const stats = useCommodityStats(commodityName, selectedDays)
+  const stats = useCommodityStats(commodity_Type, commodityName, selectedDays)
 
   const iconName = iconMap[commodityName?.trim()] || "default"
 
@@ -55,7 +53,7 @@ function CommodityInfo() {
 
   return (
     <div className="min-h-screen bg-[#f1f1f0] dark:bg-black py-8">
-
+      <BackBtn />
       <div className="max-w-[90vw] mx-auto px-6 md:px-10 
                     bg-[#f8f7f4] dark:bg-[#0f172a] 
                       rounded-3xl shadow-md border border-[#d6d3cd] dark:border-white/10 
@@ -157,6 +155,83 @@ function CommodityInfo() {
         )}
       </div>
 
+      {/* LOADING */}
+      {dataLoading ? (
+        <div className="text-gray-500 dark:text-gray-400">
+          Loading...
+        </div>
+      ) : (
+        <>
+          {/* STATS CARDS */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+
+            <Card
+              title="Current Price"
+              value={`₹${stats?.currentPrice
+                ? stats.currentPrice.toFixed(2)
+                : 0
+                }`}
+            />
+
+            <Card
+              title="24H Change"
+              value={changeValue}
+              green={stats?.change > 0}
+              red={stats?.change < 0}
+            />
+
+            <Card
+              title="Predicted Price"
+              value={
+                stats?.predict?.predicted_price
+                  ? `₹${stats.predict.predicted_price.toFixed(2)}`
+                  : "-"
+              }
+            />
+
+            <Card
+              title="Volatility"
+              value={
+                stats?.volatility !== null
+                  ? `${stats.volatility}%`
+                  : "-"
+              }
+            />
+
+          </div>
+
+          {/* MAIN SECTION */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {/* GRAPH */}
+            <div className="lg:col-span-2 space-y-6">
+
+              <PriceGraph
+                commodityType={commodity_Type}
+                commodityName={commodityName}
+                selectedDays={selectedDays}
+                setSelectedDays={setSelectedDays}
+              />
+
+              <PredictionTable
+                predictions={stats?.rawPredictions}
+                currentPrice={stats?.currentPrice}
+              />
+
+            </div>
+
+            {/* MARKET INSIGHTS */}
+            <div className="w-full">
+              <MarketInsights
+                stats={stats}
+                changeValue={changeValue}
+                selectedDays={selectedDays}
+              />
+            </div>
+
+          </div>
+        </>
+      )}
     </div>
   )
 }

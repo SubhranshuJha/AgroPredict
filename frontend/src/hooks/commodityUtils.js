@@ -1,7 +1,10 @@
-import { useFetchData } from "./Data";
+import { useFetchData } from "../contexts/Data";
 import { useMemo } from "react";
-export const useCommodityStats = (commodityName, selectedDays = 7) => {
-  const { data } = useFetchData()
+import { filterData, sortData, processData } from '../utils'
+
+export const useCommodityStats = (commodityType, commodityName, selectedDays = 7) => {
+  const { data: allData } = useFetchData()
+  const data = allData[commodityType]
 
   const stats = useMemo(() => {
 
@@ -11,10 +14,19 @@ export const useCommodityStats = (commodityName, selectedDays = 7) => {
       .sort((a, b) => a.dateObj - b.dateObj)
       .slice(-selectedDays)
 
+    // just uncomment below code
+    // const rawPredictions = processData({
+    //   data: data?.predictions || [],
+    //   filters: { commodity: commodityName.trim() },
+    //   sortBy: 'date',
+    //   order: 1
+    // })
+
     const rawPredictions = (data?.predictions || [])
       .filter(item => item.commodity.trim() === commodityName.trim())
       .map(item => ({ ...item, dateObj: new Date(item.date) }))
       .sort((a, b) => a.dateObj - b.dateObj)
+
 
     if (rawHistorical.length === 0) {
       return {

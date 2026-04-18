@@ -1,14 +1,15 @@
 import React from 'react'
-import HeatMap from '../Components/HeatMap'
+import { BackBtn, HeatMap } from '../Components'
 
 function OverView() {
   return (
-      <>
-      <div className='px-6 md:px-10 py-10'>
-      <HeatMap/>
+    <>
+      <div className='m-3'>
+        <BackBtn />
+        <HeatMap />
 
       </div>
-      </>
+    </>
   )
 }
 

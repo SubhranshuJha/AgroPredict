@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import alerts_route
-from app.routes import predict_route
+from app.routes import (
+    alerts_route,
+    predict_cereals_route,
+    predict_fruits_route,
+    predict_vegetable_route,
+)
 
 app = FastAPI(title="AgroPredict API")
 
@@ -13,7 +17,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(predict_route.router, prefix="/api")
+app.include_router(predict_cereals_route.router, prefix="/api")
+app.include_router(predict_fruits_route.router, prefix="/api")
+app.include_router(predict_vegetable_route.router, prefix="/api")
 app.include_router(alerts_route.router, prefix="/api")
 
 @app.get("/")

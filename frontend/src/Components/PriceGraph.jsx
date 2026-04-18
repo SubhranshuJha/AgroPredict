@@ -11,10 +11,9 @@ import {
 } from 'recharts';
 import { useFetchData } from '../contexts/Data';
 
-const PriceGraph = ({ commodityName = "Wheat", selectedDays, setSelectedDays }) => {
-  const { data, dataLoading } = useFetchData();
-  // const [selectedDays, setSelectedDays] = useState(7);
-
+const PriceGraph = ({ commodityType, commodityName = "Wheat", selectedDays, setSelectedDays }) => {
+  const { data: allData, dataLoading } = useFetchData();
+  const data = allData[commodityType]
   // filter historical data
   const rawHistorical = (data?.historical || [])
     .filter(item => item.commodity.trim() === commodityName.trim())

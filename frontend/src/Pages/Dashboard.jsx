@@ -1,11 +1,10 @@
 import React from "react";
-import CardRenderer from "../Components/CardRenderer";
+import { BackBtn, CardRenderer, GlobalLoader } from "../Components";
 import { useFetchData } from "../contexts/Data";
-import GlobalLoader from '../Components/GlobalLoader'
 
 
 function Dashboard() {
-  const { data, alerts, dataLoading, alertsLoading, fetchData, fetchAlerts } = useFetchData();
+  const { data: { cereals: data }, alerts, dataLoading, alertsLoading, fetchData, fetchAlerts } = useFetchData();
 
   const formattedTodayDate = new Date().toLocaleDateString('en-CA')
   const lastUpdatedDate = data?.historical?.reduce(
@@ -18,6 +17,7 @@ function Dashboard() {
 
   return (
     <>
+      <BackBtn />
       <div className="text-gray-200 min-h-screen px-6 md:px-16 py-10">
 
         {/* HEADER */}
@@ -39,13 +39,13 @@ function Dashboard() {
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
             <p className="text-gray-400 text-sm mb-1">COMMODITIES</p>
-            <h2 className="text-2xl font-semibold text-white">22</h2>
+            <h2 className="text-2xl font-semibold text-white">95+</h2>
             <p className="text-gray-500 text-xs mt-1">7 real • 15 simulated</p>
           </div>
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
             <p className="text-gray-400 text-sm mb-1">RISING TODAY</p>
-            <h2 className="text-2xl font-semibold text-green-400">9</h2>
+            <h2 className="text-2xl font-semibold text-green-400">#</h2>
             <p className="text-gray-500 text-xs mt-1">
               Price increasing vs yesterday
             </p>
@@ -53,7 +53,7 @@ function Dashboard() {
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
             <p className="text-gray-400 text-sm mb-1">FALLING TODAY</p>
-            <h2 className="text-2xl font-semibold text-red-400">10</h2>
+            <h2 className="text-2xl font-semibold text-red-400">#</h2>
             <p className="text-gray-500 text-xs mt-1">
               Price decreasing vs yesterday
             </p>
@@ -61,7 +61,7 @@ function Dashboard() {
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
             <p className="text-gray-400 text-sm mb-1">AVG MARKET PRICE</p>
-            <h2 className="text-2xl font-semibold text-yellow-400">₹8,040</h2>
+            <h2 className="text-2xl font-semibold text-yellow-400"># ₹</h2>
             <p className="text-gray-500 text-xs mt-1">Status: Volatile</p>
           </div>
 
@@ -88,7 +88,7 @@ function Dashboard() {
                   onClick={fetchAlerts}
                   disabled={alertsLoading}
                 >
-                  Refresh 
+                  Refresh
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"
@@ -99,7 +99,7 @@ function Dashboard() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className={`transition-transform duration-300 ${dataLoading ? "animate-spin" : ""}`}
+                    className={`transition-transform duration-300 ${alertsLoading ? "animate-spin" : ""}`}
                   >
                     <path d="M23 4v6h-6"></path>
                     <path d="M1 20v-6h6"></path>
@@ -134,13 +134,13 @@ function Dashboard() {
                           {alert.detail}
                         </p>
                       </div>
-                   
+
 
                       <span className="text-xs text-gray-500 whitespace-nowrap ml-4 flex flex-col items-center justify-between gap-1">
                         {alert.generated_at}
-                           <span className="border text-sm rounded-md min-w-fit px-3 h-fit border-white/40 text-cyan-500/70 whitespace-nowrap">
-                        {alert.type}
-                      </span>
+                        <span className="border text-sm rounded-md min-w-fit px-3 h-fit border-white/40 text-cyan-500/70 whitespace-nowrap">
+                          {alert.type}
+                        </span>
                       </span>
                     </div>
                   ))
@@ -161,23 +161,23 @@ function Dashboard() {
             <div className="space-y-3 text-sm">
 
               <div className="flex justify-between">
-                <span className="text-gray-400">Active Predictions</span>
-                <span className="text-white">22</span>
+                <span className="text-gray-400">Total Commodities</span>
+                <span className="text-white">95+</span>
               </div>
 
               <div className="flex justify-between">
                 <span className="text-gray-400">Model Accuracy</span>
-                <span className="text-green-400">94.2%</span>
+                <span className="text-green-400">84.2%</span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-gray-400">Real Commodities</span>
-                <span className="text-white">7</span>
+                <span className="text-gray-400">Active Predictions</span>
+                <span className="text-white">75+</span>
               </div>
 
               <div className="flex justify-between">
                 <span className="text-gray-400">Market Status</span>
-                <span className="text-red-400">Volatile</span>
+                <span className="text-red-400"># to be dev</span>
               </div>
 
               <div className="flex justify-between">
