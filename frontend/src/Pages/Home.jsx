@@ -9,7 +9,7 @@ function Home() {
       <section className="flex flex-col items-center justify-center text-center px-6 py-12 pb-12">
 
         <span className="border border-white/20 text-sm px-4 py-1 rounded-full mb-6 backdrop-blur">
-          LSTM-POWERED • 94.2% ACCURACY • 22 COMMODITIES
+          LSTM-POWERED • 84.2% ACCURACY • 95+ COMMODITIES
         </span>
 
         <h1 className="text-4xl md:text-6xl font-bold leading-tight max-w-4xl">
@@ -42,12 +42,12 @@ function Home() {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 px-6 md:px-20 pb-20">
 
         <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 text-center">
-          <h2 className="text-3xl font-bold text-green-400">94.2%</h2>
+          <h2 className="text-3xl font-bold text-green-400">84.2%</h2>
           <p className="text-white/60 mt-2">Prediction Accuracy</p>
         </div>
 
         <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-6 text-center">
-          <h2 className="text-3xl font-bold text-green-400">22+</h2>
+          <h2 className="text-3xl font-bold text-green-400">95+</h2>
           <p className="text-white/60 mt-2">Commodities Tracked</p>
         </div>
 
@@ -94,7 +94,7 @@ function Home() {
             <h3 className="text-lg font-semibold mb-2">Real-Time Analytics</h3>
             <p className="text-white/60 text-sm">
               Processes live market data to provide instant insights and predictions
-              across 22+ commodities.
+              across 95+ commodities.
             </p>
           </div>
 

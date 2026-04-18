@@ -89,9 +89,9 @@ const HeatMap = () => {
             Live Heatmap Overview
           </p>
         </div>
-
-        {/* dropdown button for sorting*/}
+        {/* top btns and sortings */}
         <div className="relative min-w-50 flex gap-2">
+          {/* filter by type */}
           {["cereals", "vegetables", "fruits"]
             .map(
               (type) =>
@@ -108,6 +108,7 @@ const HeatMap = () => {
                 </button>)
             )
           }
+          {/* dropdown button for sorting*/}
           <select
             value={sorted}
             onChange={(e) => setSorted(e.target.value)}
@@ -118,12 +119,14 @@ const HeatMap = () => {
             <option value="asc-alpha">Ascending alphabetical</option>
             <option value="desc-alpha">Descending alphabetical</option>
           </select>
+
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-emerald-500">
             <svg className="w-5 h-5 fill-current" viewBox="0 0 20 20">
               <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
             </svg>
           </div>
         </div>
+
       </div>
       <div className="relative w-full max-w-7xl mx-auto px-10">
         <div
@@ -166,12 +169,12 @@ const HeatMap = () => {
           )}
         </div>
         {!showAll && sortedData.length > 12 && (
-          <div className="absolute bottom-0 left-0 w-full h-40 flex items-end justify-center pointer-events-none">
+          <div className="absolute bottom-0 left-0 w-full h-10 flex items-end justify-center pointer-events-none">
 
             {/* Gradient fade */}
-            <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0b0e14] to-transparent backdrop-blur-sm"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0b0e14] to-transparent "></div>
 
-            {/* Button (clickable) */}
+            {/* view more Button (clickable) */}
             <button
               onClick={() => {
                 setShowAll(true);
@@ -183,6 +186,7 @@ const HeatMap = () => {
             </button>
           </div>
         )}
+        {/* view less btn */}
         {showAll && sortedData.length > 12 && (
           <div className="flex justify-center mt-6">
             <button

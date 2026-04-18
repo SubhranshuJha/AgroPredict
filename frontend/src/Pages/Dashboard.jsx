@@ -4,15 +4,87 @@ import { useFetchData } from "../contexts/Data";
 
 
 function Dashboard() {
-  const { data: { cereals: data }, alerts, dataLoading, alertsLoading, fetchData, fetchAlerts } = useFetchData();
+  const { data, alerts, dataLoading, alertsLoading, fetchData, fetchAlerts } = useFetchData();
+  const allHistorical = [
+    ...(data.cereals?.historical || []),
+    ...(data.vegetables?.historical || []),
+    ...(data.fruits?.historical || [])
+  ];
 
+  const allPredictions = [
+    ...(data.cereals?.predictions || []),
+    ...(data.vegetables?.predictions || []),
+    ...(data.fruits?.predictions || [])
+  ];
+  const today = new Date().toLocaleDateString('en-CA');
+
+  const previousDate = new Date(
+    new Date(today).getTime() - 86400000
+  ).toLocaleDateString('en-CA');
+
+  const todayData = allHistorical.filter(i => i.date === today);
+  const yesterdayData = allHistorical.filter(i => i.date === previousDate);
+
+  const prices = todayData.map(item => item.avg_price);
+
+  const mean = prices.length
+    ? prices.reduce((sum, p) => sum + p, 0) / prices.length
+    : 0;
+
+  const variance = prices.length
+    ? prices.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / prices.length
+    : 0;
+
+  const stdDev = Math.sqrt(variance);
+
+  const avgVolatility = mean
+    ? ((stdDev / mean) * 100).toFixed(2)
+    : 0;
+  let marketStatus = "Stable";
+
+  if (avgVolatility > 10) {
+    marketStatus = "Highly Volatile";
+  } else if (avgVolatility > 5) {
+    marketStatus = "Volatile";
+  }
+  let statusColor = "text-green-400";
+
+  if (marketStatus === "Volatile") {
+    statusColor = "text-yellow-400";
+  }
+  if (marketStatus === "Highly Volatile") {
+    statusColor = "text-red-400";
+  }
   const formattedTodayDate = new Date().toLocaleDateString('en-CA')
-  const lastUpdatedDate = data?.historical?.reduce(
+  const lastUpdatedDate = data["cereals"]?.historical?.reduce(
     (max, item) => {
       return item.date > max ? item.date : max;
-    }, data?.historical?.[0].date
+    }, data["cereals"]?.historical?.[0].date
   )
+  let rising = 0;
+  let falling = 0;
 
+  todayData.forEach(item => {
+    const yesterday = yesterdayData.find(
+      y => y.commodity === item.commodity
+    );
+
+    if (!yesterday) return;
+
+    const diff = item.avg_price - yesterday.avg_price;
+
+    if (diff > 0) rising++;
+    else if (diff < 0) falling++;
+  });
+
+
+  const totalCommodities = todayData.length || 0;
+  const avgMarketPrice = todayData.length
+    ? (
+      todayData.reduce((sum, item) => sum + item.avg_price, 0) /
+      todayData.length
+    ).toFixed(2)
+    : 0;
 
 
   return (
@@ -40,12 +112,12 @@ function Dashboard() {
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
             <p className="text-gray-400 text-sm mb-1">COMMODITIES</p>
             <h2 className="text-2xl font-semibold text-white">95+</h2>
-            <p className="text-gray-500 text-xs mt-1">7 real • 15 simulated</p>
+            <p className="text-gray-500 text-xs mt-1">total commodities tracked</p>
           </div>
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
             <p className="text-gray-400 text-sm mb-1">RISING TODAY</p>
-            <h2 className="text-2xl font-semibold text-green-400">#</h2>
+            <h2 className="text-2xl font-semibold text-green-400">{rising}</h2>
             <p className="text-gray-500 text-xs mt-1">
               Price increasing vs yesterday
             </p>
@@ -53,7 +125,7 @@ function Dashboard() {
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
             <p className="text-gray-400 text-sm mb-1">FALLING TODAY</p>
-            <h2 className="text-2xl font-semibold text-red-400">#</h2>
+            <h2 className="text-2xl font-semibold text-red-400">{falling}</h2>
             <p className="text-gray-500 text-xs mt-1">
               Price decreasing vs yesterday
             </p>
@@ -61,8 +133,8 @@ function Dashboard() {
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
             <p className="text-gray-400 text-sm mb-1">AVG MARKET PRICE</p>
-            <h2 className="text-2xl font-semibold text-yellow-400"># ₹</h2>
-            <p className="text-gray-500 text-xs mt-1">Status: Volatile</p>
+            <h2 className="text-2xl font-semibold text-yellow-400">₹{avgMarketPrice}</h2>
+            <p className={`text-gray-500 text-xs mt-1 ${statusColor}`}>Status: {marketStatus} ({avgVolatility}%) </p>
           </div>
 
         </div>
@@ -177,7 +249,7 @@ function Dashboard() {
 
               <div className="flex justify-between">
                 <span className="text-gray-400">Market Status</span>
-                <span className="text-red-400"># to be dev</span>
+                <span className="text-red-400">{marketStatus}</span>
               </div>
 
               <div className="flex justify-between">
