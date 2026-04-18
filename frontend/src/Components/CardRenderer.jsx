@@ -1,6 +1,5 @@
 import React from 'react'
-import Card from "../Components/Card.jsx";
-import CardUiAnimation from "../Components/CardUiAnimation.jsx";
+import { Card, CardUiAnimation } from "../Components";
 import iconMap from '../assets/map.json'
 import { useFetchData } from "../contexts/Data.jsx";
 import { useEffect, useState, useMemo } from "react";
@@ -12,21 +11,21 @@ function CardRenderer() {
   const [search, setSearch] = useState("");
   const sortOptions = ["highestAvgPrice", "lowestAvgPrice", "name(asc)", "name(desc)"]
   const filterOptions = ["predictionAvailable", "predictionUnavailable"]
+  const [selectedType, setSelectedType] = useState("cereals");
   const [sortBy, setSortBy] = useState("")
   const [filterBy, setFilterBy] = useState(null);
   const [trend, setTrend] = useState("all");
   const today = new Date().toLocaleDateString('en-CA');
   const [selectedDate, setSelectedDate] = useState(today);
-
   // const todayDate = selectedDate
   const previousDate = new Date(new Date(selectedDate).getTime() - 86400000).toLocaleDateString('en-CA')
 
-  const historicalData = data?.historical?.filter(commodity => commodity.date === selectedDate) || []
-  // const historicalData = data?.historical?.filter(commodity => commodity.date === '2026-04-13') || []
-  const yesterdayData = data?.historical?.filter(
+  const historicalData = data[selectedType]?.historical?.filter(commodity => commodity.date === selectedDate) || []
+  // const historicalData = data[selectedType]?.historical?.filter(commodity => commodity.date === "2026-04-17") || []
+  const yesterdayData = data[selectedType]?.historical?.filter(
     commodity => commodity.date === previousDate
   ) || []
-  const predictedData = data?.predictions || []
+  const predictedData = data[selectedType]?.predictions || []
   totalAvailableCommodities = historicalData?.length || 0
 
   const sortedData = useMemo(() => {
@@ -198,43 +197,43 @@ function CardRenderer() {
                 key={t.key}
                 onClick={() => setTrend(t.key)}
                 className={`px-3 py-2 rounded-xl border flex items-center gap-1 whitespace-nowrap
-        ${trend === t.key
+                  ${trend === t.key
                     ? "bg-blue-500/70"
                     : "dark:bg-black"
                   }
-      `}
+                `}
               >
                 <span className="flex items-center">{t.icon}</span>
                 {t.label}
               </button>
             ))}
             {/* refresh btn */}
-        <button
-          className="border px-2 py-2 rounded-lg hover:bg-white/10 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={fetchData}
-          disabled={dataLoading}
-        >
-          Refresh
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={`transition-transform duration-300 ${dataLoading ? "animate-spin" : ""}`}
-          >
-            <path d="M23 4v6h-6"></path>
-            <path d="M1 20v-6h6"></path>
-            <path d="M3.51 9a9 9 0 0114.13-3.36L23 10"></path>
-            <path d="M20.49 15a9 9 0 01-14.13 3.36L1 14"></path>
-          </svg>
-        </button>
+            <button
+              className="border px-2 py-2 rounded-lg hover:bg-white/10 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={fetchData}
+              disabled={dataLoading}
+            >
+              Refresh
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`transition-transform duration-300 ${dataLoading ? "animate-spin" : ""}`}
+              >
+                <path d="M23 4v6h-6"></path>
+                <path d="M1 20v-6h6"></path>
+                <path d="M3.51 9a9 9 0 0114.13-3.36L23 10"></path>
+                <path d="M20.49 15a9 9 0 01-14.13 3.36L1 14"></path>
+              </svg>
+            </button>
             <div className="w-full mt-3 flex justify-start">
-              <div className="relative">
+              <div className="relative flex">
 
                 {/* Icon */}
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -261,7 +260,23 @@ function CardRenderer() {
                 >
                   Today
                 </button>
-                
+                <div style={{ display: "flex", gap: "10px" }}>
+                  {["cereals", "fruits", "vegetables"].map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setSelectedType(type)}
+                      className={`px-3 py-2 rounded-xl border flex items-center gap-1 whitespace-nowrap
+                  ${type === selectedType
+                          ? "bg-green-500/50"
+                          : "dark:bg-black"
+                        }
+                `}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+
                 {/* </div> */}
               </div>
             </div>
@@ -281,7 +296,7 @@ function CardRenderer() {
                   sortedData.map((entity) => (
                     <Link
                       key={entity.commodity}
-                      to={`/commodityInformation/${encodeURIComponent(entity.commodity)}`}
+                      to={`/commodityInformation/${encodeURIComponent(selectedType)}/${encodeURIComponent(entity.commodity)}`}
                       className="block"
                     >
                       <Card

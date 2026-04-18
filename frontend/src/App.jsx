@@ -3,7 +3,7 @@ import './App.css'
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'
 import { Home, Dashboard, CommodityInfo, AboutUs, MarketOverview } from './Pages'
 import Layout from './Layout'
-import GlobalLoader from './Components/GlobalLoader'
+import { GlobalLoader } from './Components'
 
 
 const router = createBrowserRouter(
@@ -11,7 +11,7 @@ const router = createBrowserRouter(
     <Route path='/' element={<Layout />}>
 
       <Route index element={<Home />} />
-      <Route path='commodityInformation/:commodityId' element={<CommodityInfo />} />
+      <Route path='commodityInformation/:commodity_Type/:commodityId' element={<CommodityInfo />} />
       <Route path='dashboard' element={<Dashboard />} />
       <Route path='about' element={<AboutUs />} />
       <Route path='market-overview' element={<MarketOverview />} />
@@ -25,7 +25,6 @@ function App() {
 
   return (
     <div className='w-full min-h-screen bg-white dark:bg-[#020617] text-gray-900 dark:text-white'>
-
       {/* <GlobalLoader /> */}
       <RouterProvider router={router} />
 

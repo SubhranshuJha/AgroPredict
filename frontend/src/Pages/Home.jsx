@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import CardRenderer from "../Components/CardRenderer.jsx";
+import { CardRenderer } from "../Components";
 
 function Home() {
   return (
@@ -57,7 +57,7 @@ function Home() {
         </div>
 
       </section>
-{/* 
+      {/* 
       CARD SECTION
       <section className="px-6 md:px-20 pb-20">
         <h2 className="text-2xl font-semibold mb-6">Market Insights</h2>
@@ -65,73 +65,73 @@ function Home() {
       </section> */}
 
 
-{/* FEATURES SECTION */}
-<section className="px-6 md:px-20 pb-24">
+      {/* FEATURES SECTION */}
+      <section className="px-6 md:px-20 pb-24">
 
-  <div className="text-center mb-16">
-    <p className="text-xs tracking-widest text-white/40 mb-4">
-      POWERED BY ADVANCED AI
-    </p>
+        <div className="text-center mb-16">
+          <p className="text-xs tracking-widest text-white/40 mb-4">
+            POWERED BY ADVANCED AI
+          </p>
 
-    <h2 className="text-3xl md:text-5xl font-semibold">
-      Everything you need to <br /> <span className="text-green-400">Trade </span>smarter
-    </h2>
-  </div>
+          <h2 className="text-3xl md:text-5xl font-semibold">
+            Everything you need to <br /> <span className="text-green-400">Trade </span>smarter
+          </h2>
+        </div>
 
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-    {/* CARD 1 */}
-    <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
-      <h3 className="text-lg font-semibold mb-2">LSTM Neural Networks</h3>
-      <p className="text-white/60 text-sm">
-        Advanced Long Short-Term Memory networks analyze complex agricultural
-        patterns and market trends.
-      </p>
-    </div>
+          {/* CARD 1 */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
+            <h3 className="text-lg font-semibold mb-2">LSTM Neural Networks</h3>
+            <p className="text-white/60 text-sm">
+              Advanced Long Short-Term Memory networks analyze complex agricultural
+              patterns and market trends.
+            </p>
+          </div>
 
-    {/* CARD 2 */}
-    <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
-      <h3 className="text-lg font-semibold mb-2">Real-Time Analytics</h3>
-      <p className="text-white/60 text-sm">
-        Processes live market data to provide instant insights and predictions
-        across 22+ commodities.
-      </p>
-    </div>
+          {/* CARD 2 */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
+            <h3 className="text-lg font-semibold mb-2">Real-Time Analytics</h3>
+            <p className="text-white/60 text-sm">
+              Processes live market data to provide instant insights and predictions
+              across 22+ commodities.
+            </p>
+          </div>
 
-    {/* CARD 3 */}
-    <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
-      <h3 className="text-lg font-semibold mb-2">Price Forecasting</h3>
-      <p className="text-white/60 text-sm">
-        Delivers accurate price predictions up to 7 days ahead with high accuracy.
-      </p>
-    </div>
+          {/* CARD 3 */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
+            <h3 className="text-lg font-semibold mb-2">Price Forecasting</h3>
+            <p className="text-white/60 text-sm">
+              Delivers accurate price predictions up to 7 days ahead with high accuracy.
+            </p>
+          </div>
 
-    {/* CARD 4 */}
-    <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
-      <h3 className="text-lg font-semibold mb-2">Risk Assessment</h3>
-      <p className="text-white/60 text-sm">
-        Comprehensive risk analysis and volatility predictions to help mitigate losses.
-      </p>
-    </div>
+          {/* CARD 4 */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
+            <h3 className="text-lg font-semibold mb-2">Risk Assessment</h3>
+            <p className="text-white/60 text-sm">
+              Comprehensive risk analysis and volatility predictions to help mitigate losses.
+            </p>
+          </div>
 
-    {/* CARD 5 */}
-    <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
-      <h3 className="text-lg font-semibold mb-2">Global Market Data</h3>
-      <p className="text-white/60 text-sm">
-        Access worldwide agricultural commodity markets and pricing information.
-      </p>
-    </div>
+          {/* CARD 5 */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
+            <h3 className="text-lg font-semibold mb-2">Global Market Data</h3>
+            <p className="text-white/60 text-sm">
+              Access worldwide agricultural commodity markets and pricing information.
+            </p>
+          </div>
 
-    {/* CARD 6 */}
-    <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
-      <h3 className="text-lg font-semibold mb-2">AI-Powered Insights</h3>
-      <p className="text-white/60 text-sm">
-        Machine learning algorithms continuously improve prediction accuracy over time.
-      </p>
-    </div>
+          {/* CARD 6 */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
+            <h3 className="text-lg font-semibold mb-2">AI-Powered Insights</h3>
+            <p className="text-white/60 text-sm">
+              Machine learning algorithms continuously improve prediction accuracy over time.
+            </p>
+          </div>
 
-  </div>
-</section>
+        </div>
+      </section>
     </div>
   );
 }

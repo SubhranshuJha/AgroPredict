@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom';
 
 const HeatMap = () => {
 
+  const [selectedType, setSelectedType] = useState('cereals');
   // fetch data and shorting it
-  const { data: x, dataLoading } = useFetchData();
+  const { data: allData, dataLoading } = useFetchData();
+  const x = allData[selectedType]
   const data = x?.historical || [];
   const dates = [...new Set(data.map(d => d.date))].sort((a, b) => new Date(b) - new Date(a));
 
-
+  const [showAll, setShowAll] = useState(false);
   const grouped = data.reduce((acc, item) => {
     if (!acc[item.commodity]) {
       acc[item.commodity] = [];
@@ -73,6 +75,7 @@ const HeatMap = () => {
         return 0;
     }
   })
+  const visibleData = showAll ? sortedData : sortedData.slice(0, 12);
 
   return (
     <div className="w-full flex flex-col gap-8 py-10 bg-white dark:bg-[#0b0e14] rounded-3xl shadow shadow-taupe-600 border border-gray-200 dark:border-white/5 transition-all">
@@ -88,7 +91,23 @@ const HeatMap = () => {
         </div>
 
         {/* dropdown button for sorting*/}
-        <div className="relative min-w-50">
+        <div className="relative min-w-50 flex gap-2">
+          {["cereals", "vegetables", "fruits"]
+            .map(
+              (type) =>
+              (
+                <button
+                  key={type}
+                  className={
+                    `px-3 dark:text-indigo-200/90 font-semibold border border-cyan-600 rounded-md
+                    ${type === selectedType ? "bg-[#74166e]" : "dark:bg-black"}
+                    `}
+                  onClick={() => { setSelectedType(type); setShowAll(false); }}
+                >
+                  {type}
+                </button>)
+            )
+          }
           <select
             value={sorted}
             onChange={(e) => setSorted(e.target.value)}
@@ -106,42 +125,79 @@ const HeatMap = () => {
           </div>
         </div>
       </div>
+      <div className="relative w-full max-w-7xl mx-auto px-10">
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ${!showAll ? "max-h-[520px] overflow-hidden" : ""
+            }`}
+        >
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl mx-auto  px-10">
-        {formattedData.length > 0 ? (
-          sortedData.map((item, index) => (
-            <Link
-              key={index}
-              to={`/commodityInformation/${encodeURIComponent(item.name)}`}
-              className="block"
-            >
-              <div
-                className={`${item.bgColor} h-36 rounded-3xl p-6 flex flex-col justify-between shadow-lg transition-all hover:scale-[1.03] hover:brightness-110 active:scale-95 cursor-pointer relative overflow-hidden group`}
+          {formattedData.length > 0 ? (
+            visibleData.map((item, index) => (
+              <Link
+                key={index}
+                to={`/commodityInformation/${encodeURIComponent(selectedType)}/${encodeURIComponent(item.name)}`}
+                className="block"
               >
-                <span className="text-white font-black text-sm uppercase tracking-tight opacity-90 group-hover:opacity-100">
-                  {item.name}
-                </span>
+                <div
+                  className={`${item.bgColor} h-36 rounded-3xl p-6 flex flex-col justify-between shadow-lg transition-all hover:scale-[1.03] hover:brightness-110 active:scale-95 cursor-pointer relative overflow-hidden group`}
+                >
+                  <span className="text-white font-black text-sm uppercase tracking-tight opacity-90 group-hover:opacity-100">
+                    {item.name}
+                  </span>
 
-                <div className="text-right">
-                  <span className="text-white block text-2xl font-black tracking-tighter">
-                    ₹{item.price.toLocaleString('en-IN')}
-                  </span>
-                  <span className="text-[10px] font-black bg-black/20 text-white px-2 py-1 rounded-lg inline-block mt-2">
-                    {item.percent}
-                  </span>
-                  <span className="text-[15px] text-white/80 block mt-1">
-                    {item.formattedDate}
-                  </span>
+                  <div className="text-right">
+                    <span className="text-white block text-2xl font-black tracking-tighter">
+                      ₹{item.price.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[10px] font-black bg-black/20 text-white px-2 py-1 rounded-lg inline-block mt-2">
+                      {item.percent}
+                    </span>
+                    <span className="text-[15px] text-white/80 block mt-1">
+                      {item.formattedDate}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </Link >
-          ))
-        ) : (
-          <div className="col-span-full py-20 text-center text-gray-400 font-bold uppercase tracking-widest animate-pulse">
-            {dataLoading ? "Analyzing Market Data..." : "Data not found"}
+              </Link >
+            ))
+          ) : (
+            <div className="col-span-full py-20 text-center text-gray-400 font-bold uppercase tracking-widest animate-pulse">
+              {dataLoading ? "Analyzing Market Data..." : "Data not found"}
+            </div>
+          )}
+        </div>
+        {!showAll && sortedData.length > 12 && (
+          <div className="absolute bottom-0 left-0 w-full h-40 flex items-end justify-center pointer-events-none">
+
+            {/* Gradient fade */}
+            <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0b0e14] to-transparent backdrop-blur-sm"></div>
+
+            {/* Button (clickable) */}
+            <button
+              onClick={() => {
+                setShowAll(true);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="relative mb-4 px-6 py-2 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all pointer-events-auto shadow-lg"
+            >
+              View More
+            </button>
+          </div>
+        )}
+        {showAll && sortedData.length > 12 && (
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => {
+                setShowAll(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="px-6 py-2 rounded-xl bg-transparent border border-emerald-500 text-emerald-500 font-bold hover:bg-emerald-500 hover:text-white transition-all"
+            >
+              View Less
+            </button>
           </div>
         )}
       </div>
+
     </div>
   );
 };

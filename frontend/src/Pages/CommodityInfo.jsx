@@ -1,22 +1,20 @@
 import { useState, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import PriceGraph from '../Components/PriceGraph'
 import iconMap from '../assets/map.json'
 import { useFetchData } from '../contexts/Data'
-import { useCommodityStats } from '../contexts/commodityUtils'
-import PredictionTable from '../Components/PredictionTable'
-import MarketInsights from '../Components/MarketInsights'
-
+import { useCommodityStats } from '../hooks/commodityUtils'
+import { PriceGraph, PredictionTable, MarketInsights, BackBtn } from '../Components'
 function CommodityInfo() {
 
-  const { commodityId } = useParams()
+  const { commodity_Type, commodityId } = useParams()
+  const commodityType = decodeURIComponent(commodity_Type);
   const commodityName = decodeURIComponent(commodityId)
 
   const [selectedDays, setSelectedDays] = useState(7)
 
-  const {  dataLoading } = useFetchData()
+  const { dataLoading } = useFetchData()
 
-  const stats = useCommodityStats(commodityName, selectedDays)
+  const stats = useCommodityStats(commodity_Type, commodityName, selectedDays)
 
   const iconName = iconMap[commodityName?.trim()] || "default"
 
@@ -54,7 +52,7 @@ function CommodityInfo() {
 
   return (
     <div className="min-h-screen bg-white text-black dark:bg-[#0b0e14] dark:text-white p-6">
-
+      <BackBtn />
       {/* HEADER */}
       <div className="flex items-center justify-between mb-8">
 
@@ -126,6 +124,7 @@ function CommodityInfo() {
             <div className="lg:col-span-2 space-y-6">
 
               <PriceGraph
+                commodityType={commodity_Type}
                 commodityName={commodityName}
                 selectedDays={selectedDays}
                 setSelectedDays={setSelectedDays}
