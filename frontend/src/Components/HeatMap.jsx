@@ -30,8 +30,8 @@ const HeatMap = () => {
     // sort by date desc
     const sorted = records.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    const todayItem = sorted[0];        // latest available
-    const yesterdayItem = sorted[1];    // previous available
+    const todayItem = sorted[0];        
+    const yesterdayItem = sorted[1];    
 
     if (!todayItem || !yesterdayItem) return null;
 
@@ -41,9 +41,10 @@ const HeatMap = () => {
     const diff = todayPrice - yesterdayPrice;
     const percent = ((diff / yesterdayPrice) * 100);
 
-    let bgColor = "bg-slate-500 dark:bg-slate-700";
-    if (diff > 0) bgColor = "bg-green-500 dark:bg-green-600";
-    if (diff < 0) bgColor = "bg-red-500 dark:bg-red-600";
+    let bgColor = "bg-slate-400 dark:bg-slate-600";
+
+    if (diff > 0) bgColor = "bg-emerald-400 dark:bg-emerald-500";
+    if (diff < 0) bgColor = "bg-red-400 dark:bg-red-500";
 
     return {
       name: commodity,
@@ -75,11 +76,13 @@ const HeatMap = () => {
         return 0;
     }
   })
+
   const visibleData = showAll ? sortedData : sortedData.slice(0, 12);
 
   return (
-    <div className="w-full flex flex-col gap-8 py-10 bg-white dark:bg-[#0b0e14] rounded-3xl shadow shadow-taupe-600 border border-gray-200 dark:border-white/5 transition-all">
+    <div className="w-full flex flex-col gap-8 py-10 bg-[#eceae6] dark:bg-[#0b0e14] rounded-3xl shadow-md border border-[#d6d3cd] dark:border-white/5 transition-all">
 
+      {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-center px-10 gap-6">
         <div className="text-center md:text-left">
           <h2 className="text-3xl font-black text-gray-800 dark:text-white tracking-tight italic">
@@ -112,7 +115,7 @@ const HeatMap = () => {
           <select
             value={sorted}
             onChange={(e) => setSorted(e.target.value)}
-            className="w-full appearance-none bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-200 py-3 px-6 pr-12 rounded-2xl font-black text-xs uppercase tracking-widest border-2 border-transparent focus:border-emerald-500 outline-none cursor-pointer transition-all shadow-md"
+            className="appearance-none bg-[#e5e3df] dark:bg-slate-800 text-gray-700 dark:text-gray-200 py-3 px-6 pr-12 rounded-2xl font-black text-xs uppercase tracking-widest border border-[#d6d3cd] dark:border-transparent focus:border-emerald-500 outline-none cursor-pointer transition-all shadow-sm"
           >
             <option value="asc-percent">Percent: High to Low</option>
             <option value="desc-percent">Percent: Low to High</option>
@@ -128,12 +131,15 @@ const HeatMap = () => {
         </div>
 
       </div>
-      <div className="relative w-full max-w-7xl mx-auto px-10">
-        <div
-          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ${!showAll ? "max-h-[520px] overflow-hidden" : ""
-            }`}
-        >
 
+      {/* GRID FIXED */}
+      <div className="relative w-full max-w-7xl mx-auto px-10">
+
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ${
+            !showAll ? "max-h-130 overflow-hidden" : ""
+          }`}
+        >
           {formattedData.length > 0 ? (
             visibleData.map((item, index) => (
               <Link
@@ -160,7 +166,7 @@ const HeatMap = () => {
                     </span>
                   </div>
                 </div>
-              </Link >
+              </Link>
             ))
           ) : (
             <div className="col-span-full py-20 text-center text-gray-400 font-bold uppercase tracking-widest animate-pulse">
@@ -168,11 +174,12 @@ const HeatMap = () => {
             </div>
           )}
         </div>
+
+        {/* VIEW MORE */}
         {!showAll && sortedData.length > 12 && (
           <div className="absolute bottom-0 left-0 w-full h-10 flex items-end justify-center pointer-events-none">
 
-            {/* Gradient fade */}
-            <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0b0e14] to-transparent "></div>
+            <div className="absolute inset-0 bg-linear-to-t from-white dark:from-[#0b0e14] to-transparent "></div>
 
             {/* view more Button (clickable) */}
             <button
@@ -200,6 +207,7 @@ const HeatMap = () => {
             </button>
           </div>
         )}
+
       </div>
 
     </div>

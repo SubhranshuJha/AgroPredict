@@ -20,11 +20,15 @@ const router = createBrowserRouter(
   )
 )
 
+
 function App() {
 
-
   return (
-    <div className='w-full min-h-screen bg-white dark:bg-[#020617] text-gray-900 dark:text-white'>
+    <div className='w-full min-h-screen 
+    bg-[#f1f1f0]
+    dark:bg-black
+    text-gray-800 dark:text-white'>
+
       {/* <GlobalLoader /> */}
       <RouterProvider router={router} />
 

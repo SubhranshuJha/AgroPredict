@@ -29,7 +29,7 @@ function MarketInsights({ stats, changeValue, selectedDays }) {
             <div
                 className="
                     p-5 rounded-2xl border
-                    bg-white text-black border-gray-200
+                    bg-white text-gray-800 border-[#d6d3cd]
                     dark:bg-[#111827] dark:text-white dark:border-white/10
                 "
             >
@@ -81,7 +81,7 @@ function MarketInsights({ stats, changeValue, selectedDays }) {
                         label="Lowest Price"
                         value={`₹${stats?.lowestPrice?.toFixed(2)}`}
                     />
-                    {/* PRICE RANGE BAR */}
+
                     {/* PRICE RANGE BAR */}
 <div className="pt-4">
 
@@ -107,15 +107,13 @@ function MarketInsights({ stats, changeValue, selectedDays }) {
         </div>
 
         {/* BAR BACKGROUND */}
-        <div className="relative w-full h-2 bg-gray-300 dark:bg-gray-700 rounded-full">
+        <div className="relative w-full h-2 bg-[#d6d3cd] dark:bg-gray-700 rounded-full">
 
           {/* FILLED PART ONLY */}
           <div
             className="h-2 rounded-full bg-linear-to-r from-red-400 via-yellow-400 to-green-400"
             style={{ width: `${percentage}%` }}
           />
-
-          
 
         </div>
 

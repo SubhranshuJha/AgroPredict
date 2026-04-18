@@ -30,7 +30,7 @@ function PredictionTable({ predictions = [], currentPrice = '' }) {
     <div
       className="
         p-5 rounded-2xl border
-        bg-white text-black border-gray-200
+        bg-white text-gray-800 border-[#d6d3cd]
         dark:bg-[#111827] dark:text-white dark:border-white/10
       "
     >
@@ -47,13 +47,13 @@ function PredictionTable({ predictions = [], currentPrice = '' }) {
           <table className="w-full text-sm text-left">
 
             {/* TABLE HEAD */}
-            <thead className="text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-white/10">
+            <thead className="text-gray-600 dark:text-gray-400 border-b border-[#d6d3cd] dark:border-white/10">
               <tr>
-                <th className="py-2">Date</th>
-                <th className="py-2">Price</th>
-                <th className="py-2">Change</th>
-                <th className="py-2">% Change</th>
-                <th className="py-2">Trend</th>
+                <th className="py-3">Date</th>
+                <th className="py-3">Price</th>
+                <th className="py-3">Change</th>
+                <th className="py-3">% Change</th>
+                <th className="py-3">Trend</th>
               </tr>
             </thead>
 
@@ -68,14 +68,14 @@ function PredictionTable({ predictions = [], currentPrice = '' }) {
                   <tr
                     key={index}
                     className="
-                      border-b border-gray-100 dark:border-white/5
-                      hover:bg-gray-100 dark:hover:bg-white/5
+                      border-b border-[#e0ddd7] dark:border-white/5
+                      hover:bg-[#e5e3df] dark:hover:bg-white/5
                       transition text-[15px]
                     "
                   >
 
                     {/* DATE */}
-                    <td className="py-2">
+                    <td className="py-3">
                       {new Date(item.date).toLocaleDateString('en-IN', {
                         day: 'numeric',
                         month: 'short'
@@ -83,13 +83,13 @@ function PredictionTable({ predictions = [], currentPrice = '' }) {
                     </td>
 
                     {/* PRICE */}
-                    <td className="py-2 font-medium">
+                    <td className="py-3 font-medium">
                       ₹{item.price.toFixed(2)}
                     </td>
 
                     {/* CHANGE */}
                     <td
-                      className={`py-2 ${isUp ? "text-green-500 dark:text-green-400" :
+                      className={`py-3 ${isUp ? "text-green-500 dark:text-green-400" :
                         isDown ? "text-red-500 dark:text-red-400" : ""
                         }`}
                     >
@@ -100,7 +100,7 @@ function PredictionTable({ predictions = [], currentPrice = '' }) {
 
                     {/* % CHANGE */}
                     <td
-                      className={`py-2 ${isUp ? "text-green-500 dark:text-green-400" :
+                      className={`py-3 ${isUp ? "text-green-500 dark:text-green-400" :
                         isDown ? "text-red-500 dark:text-red-400" : ""
                         }`}
                     >
@@ -111,7 +111,7 @@ function PredictionTable({ predictions = [], currentPrice = '' }) {
 
                     {/* TREND */}
                     <td
-                      className={`py-2 ${isUp ? "text-green-500 dark:text-green-400" :
+                      className={`py-3 ${isUp ? "text-green-500 dark:text-green-400" :
                         isDown ? "text-red-500 dark:text-red-400" :
                           "text-gray-500 dark:text-gray-400"
                         }`}
