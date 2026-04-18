@@ -9,7 +9,7 @@ function Home() {
       <section className="flex flex-col items-center justify-center text-center px-6 py-12 pb-12">
 
         <span className="border border-[#d6d3cd] dark:border-white/20 text-sm px-4 py-1 rounded-full mb-6 backdrop-blur bg-[#e7e5e0] dark:bg-white/10 text-gray-700 dark:text-gray-200">
-          LSTM-POWERED • 94.2% ACCURACY • 22 COMMODITIES
+          LSTM-POWERED • 84.2% ACCURACY • 95+ COMMODITIES
         </span>
 
         <h1 className="text-4xl md:text-6xl font-bold leading-tight max-w-4xl">
