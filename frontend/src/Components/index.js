@@ -10,6 +10,7 @@ import Navbar from "./Navbar"
 import PredictionTable from "./PredictionTable"
 import PriceGraph from "./PriceGraph"
 import ThemeButton from "./ThemeButton"
+import SearchBar from "./SearchBar"
 
 export {
     BackBtn,
@@ -23,5 +24,6 @@ export {
     Navbar,
     PredictionTable,
     PriceGraph,
-    ThemeButton
+    ThemeButton,
+    SearchBar
 }
