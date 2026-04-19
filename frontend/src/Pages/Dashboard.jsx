@@ -1,21 +1,16 @@
 import React from "react";
 import { BackBtn, CardRenderer, GlobalLoader } from "../Components";
-import { useFetchData } from "../contexts/Data";
+import { useFetchData } from "../contexts/data/useFetchData";
 
 
 function Dashboard() {
-  const { data, alerts, dataLoading, alertsLoading, fetchData, fetchAlerts } = useFetchData();
+  const { data, alerts, alertsLoading, fetchAlerts } = useFetchData();
   const allHistorical = [
     ...(data.cereals?.historical || []),
     ...(data.vegetables?.historical || []),
     ...(data.fruits?.historical || [])
   ];
 
-  const allPredictions = [
-    ...(data.cereals?.predictions || []),
-    ...(data.vegetables?.predictions || []),
-    ...(data.fruits?.predictions || [])
-  ];
   const today = new Date().toLocaleDateString('en-CA');
 
   const previousDate = new Date(
@@ -56,11 +51,11 @@ function Dashboard() {
     statusColor = "text-red-400";
   }
   const formattedTodayDate = new Date().toLocaleDateString('en-CA')
-  const lastUpdatedDate = data["cereals"]?.historical?.reduce(
+  const lastUpdatedDate = data["cereals"]?.historical?.length > 0 ? data["cereals"].historical.reduce(
     (max, item) => {
       return item.date > max ? item.date : max;
     }, data["cereals"]?.historical?.[0].date
-  )
+  ) : null
   let rising = 0;
   let falling = 0;
 
@@ -77,8 +72,7 @@ function Dashboard() {
     else if (diff < 0) falling++;
   });
 
-
-  const totalCommodities = todayData.length || 0;
+  const totalCommodities = Math.floor(todayData.length / 5) * 5 || 0;   // in multiply of 5
   const avgMarketPrice = todayData.length
     ? (
       todayData.reduce((sum, item) => sum + item.avg_price, 0) /
@@ -107,12 +101,17 @@ function Dashboard() {
         </div>
 
         {/* TOP STATS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-10">
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
             <p className="text-gray-400 text-sm mb-1">COMMODITIES</p>
             <h2 className="text-2xl font-semibold text-white">95+</h2>
             <p className="text-gray-500 text-xs mt-1">total commodities tracked</p>
+          </div>
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
+            <p className="text-gray-400 text-sm mb-1">LIVE COMMODITIES TRACKED</p>
+            <h2 className="text-2xl font-semibold text-white">{totalCommodities}+</h2>
+            <p className="text-gray-500 text-xs mt-1">total commodities available LIVE</p>
           </div>
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition">
@@ -193,7 +192,7 @@ function Dashboard() {
                       className={`border rounded-xl p-4 flex justify-between items-start backdrop-blur-sm
                 ${alert.type === "danger"
                           ? "border-red-500/20 bg-red-500/10"
-                          : alert.type === "warning"
+                          : alert.type === "warn"
                             ? "border-yellow-500/20 bg-yellow-500/10"
                             : "border-white/10 bg-white/5"
                         }`}

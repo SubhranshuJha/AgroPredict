@@ -1,6 +1,6 @@
-import { useFetchData } from "../contexts/Data";
+import { useFetchData } from "../contexts/data/useFetchData";
 import { useMemo } from "react";
-import { filterData, sortData, processData } from '../utils'
+// import { filterData, sortData, processData } from '../utils'
 
 export const useCommodityStats = (commodityType, commodityName, selectedDays = 7) => {
   const { data: allData } = useFetchData()

@@ -1,4 +1,4 @@
-import { useFetchData } from '../contexts/Data';
+import { useFetchData } from '../contexts/data/useFetchData';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -30,8 +30,8 @@ const HeatMap = () => {
     // sort by date desc
     const sorted = records.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    const todayItem = sorted[0];        
-    const yesterdayItem = sorted[1];    
+    const todayItem = sorted[0];
+    const yesterdayItem = sorted[1];
 
     if (!todayItem || !yesterdayItem) return null;
 
@@ -136,9 +136,8 @@ const HeatMap = () => {
       <div className="relative w-full max-w-7xl mx-auto px-10">
 
         <div
-          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ${
-            !showAll ? "max-h-130 overflow-hidden" : ""
-          }`}
+          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ${!showAll ? "max-h-130 overflow-hidden" : ""
+            }`}
         >
           {formattedData.length > 0 ? (
             visibleData.map((item, index) => (

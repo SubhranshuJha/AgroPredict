@@ -1,20 +1,20 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import iconMap from '../assets/map.json'
-import { useFetchData } from '../contexts/Data'
+import { useFetchData } from '../contexts/data/useFetchData'
 import { useCommodityStats } from '../hooks/commodityUtils'
 import { PriceGraph, PredictionTable, MarketInsights, BackBtn } from '../Components'
 function CommodityInfo() {
 
   const { commodity_Type, commodityId } = useParams()
-  const commodityType = decodeURIComponent(commodity_Type);
-  const commodityName = decodeURIComponent(commodityId)
+  const commodityType = commodity_Type ? decodeURIComponent(commodity_Type) : "";
+  const commodityName = commodityId ? decodeURIComponent(commodityId) : ""
 
   const [selectedDays, setSelectedDays] = useState(7)
 
   const { dataLoading } = useFetchData()
 
-  const stats = useCommodityStats(commodity_Type, commodityName, selectedDays)
+  const stats = useCommodityStats(commodityType, commodityName, selectedDays)
 
   const iconName = iconMap[commodityName?.trim()] || "default"
 
@@ -129,8 +129,8 @@ function CommodityInfo() {
               <div className="lg:col-span-2 space-y-8">
 
                 <PriceGraph
-                  commodityType={commodity_Type}
-                commodityName={commodityName}
+                  commodityType={commodityType}
+                  commodityName={commodityName}
                   selectedDays={selectedDays}
                   setSelectedDays={setSelectedDays}
                 />
@@ -156,7 +156,7 @@ function CommodityInfo() {
         )}
       </div>
 
-      
+
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { useFetchData } from "../contexts/Data";
+import  {useFetchData}  from "../contexts/data/useFetchData";
 
 const GlobalLoader = () => {
   const { dataLoading } = useFetchData();

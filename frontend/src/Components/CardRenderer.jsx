@@ -1,8 +1,8 @@
 import React from 'react'
 import { Card, CardUiAnimation } from "../Components";
 import iconMap from '../assets/map.json'
-import { useFetchData } from "../contexts/Data.jsx";
-import { useEffect, useState, useMemo } from "react";
+import { useFetchData } from "../contexts/data/useFetchData";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 function CardRenderer() {
@@ -20,12 +20,21 @@ function CardRenderer() {
   // const todayDate = selectedDate
   const previousDate = new Date(new Date(selectedDate).getTime() - 86400000).toLocaleDateString('en-CA')
 
-  const historicalData = data[selectedType]?.historical?.filter(commodity => commodity.date === selectedDate) || []
   // const historicalData = data[selectedType]?.historical?.filter(commodity => commodity.date === "2026-04-17") || []
-  const yesterdayData = data[selectedType]?.historical?.filter(
-    commodity => commodity.date === previousDate
-  ) || []
-  const predictedData = data[selectedType]?.predictions || []
+
+  const { historicalData, yesterdayData, predictedData } = useMemo(
+    () => {
+      const historicalData = data[selectedType]?.historical?.filter(commodity => commodity.date === selectedDate) || []
+      const yesterdayData = data[selectedType]?.historical?.filter(commodity => commodity.date === previousDate) || []
+      const predictedData = data[selectedType]?.predictions || [];
+      return {
+        historicalData,
+        yesterdayData,
+        predictedData
+      }
+    }
+    , [data, selectedType, selectedDate, previousDate]);
+
   totalAvailableCommodities = historicalData?.length || 0
 
   const sortedData = useMemo(() => {
@@ -59,11 +68,11 @@ function CardRenderer() {
 
         if (!yesterday) return false;
 
-        const diff = item.avg_price - yesterday.avg_price;
+        const diff = (item.avg_price - yesterday.avg_price)/yesterday.avg_price*100;
 
-        if (trend === "rising") return diff > 0;
-        if (trend === "falling") return diff < 0;
-        if (trend === "stable") return Math.abs(diff) < 1;
+        if (trend === "rising") return diff > 3;
+        if (trend === "falling") return diff < -3;
+        if (trend === "stable") return Math.abs(diff) <= 3;
 
         return true;
       });
@@ -110,6 +119,7 @@ function CardRenderer() {
 
             {/* Search */}
             <div className="relative flex-1 min-w-50">
+              {/* svg (search) */}
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -142,7 +152,7 @@ function CardRenderer() {
               onChange={(e) => setSortBy(e.target.value)}
               className="p-2 rounded-xl border dark:bg-black"
             >
-              <option value="">Sort</option>
+              <option value="">Sort by</option>
               {sortOptions.map((opt, i) => (
                 <option key={i} value={opt}>{opt}</option>
               ))}
@@ -154,7 +164,7 @@ function CardRenderer() {
               onChange={(e) => setFilterBy(e.target.value || null)}
               className="p-2 rounded-xl border dark:bg-black"
             >
-              <option value="">Filter</option>
+              <option value="">Filter by</option>
               {filterOptions.map((opt, i) => (
                 <option key={i} value={opt}>{opt}</option>
               ))}
@@ -185,7 +195,7 @@ function CardRenderer() {
               },
               {
                 key: "stable",
-                label: "Stable",
+                label: "Stable ( ±3% )",
                 icon: (
                   <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 12c2-4 4 4 6 0s4-4 6 0 4 4 6 0" />
@@ -233,7 +243,7 @@ function CardRenderer() {
               </svg>
             </button>
             <div className="w-full mt-3 flex justify-start">
-              <div className="relative flex">
+              <div className="relative flex flex-wrap gap-4">
 
                 {/* Icon */}
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">

@@ -9,7 +9,7 @@ import {
   Line,
   ReferenceLine
 } from 'recharts';
-import { useFetchData } from '../contexts/Data';
+import { useFetchData } from '../contexts/data/useFetchData';
 
 const PriceGraph = ({ commodityType, commodityName = "Wheat", selectedDays, setSelectedDays }) => {
   const { data: allData, dataLoading } = useFetchData();
