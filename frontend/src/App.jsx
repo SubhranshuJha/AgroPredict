@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-import './App.css'
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'
 import { Home, Dashboard, CommodityInfo, AboutUs, MarketOverview } from './Pages'
 import Layout from './Layout'
