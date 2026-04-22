@@ -13,6 +13,17 @@ CATEGORY_MODELS = {
     "fruits": HistoricalFruitsData,
     "vegetables": HistoricalVegetablesData,
 }
+EXCLUDED_COMMODITIES = {
+    "mint(pudina)",
+    "spinach",
+    "lemon",
+    "raddish",
+    "coriander(leaves)",
+}
+
+
+def _is_excluded_commodity(name: str) -> bool:
+    return isinstance(name, str) and name.strip().lower() in EXCLUDED_COMMODITIES
 
 
 def _build_alerts_for_category(db: Session, category: str, historical_model):
@@ -23,6 +34,9 @@ def _build_alerts_for_category(db: Session, category: str, historical_model):
     commodity_names = [row[0] for row in commodities]
 
     for name in commodity_names:
+        if _is_excluded_commodity(name):
+            continue
+
         rows = (
             db.query(historical_model)
             .filter(historical_model.commodity == name)
