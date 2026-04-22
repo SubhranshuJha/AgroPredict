@@ -154,11 +154,6 @@ function CardRenderer() {
                     >
                       <Card
                         historicalData={entity}
-                        predictedData={
-                          predictedData?.filter(
-                            item => item.commodity === entity.commodity
-                          )
-                        }
                         icon={`/icons/${iconMap[entity.commodity.trim()]}.png`}
                       />
                     </Link>

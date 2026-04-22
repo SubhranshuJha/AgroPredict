@@ -9,7 +9,7 @@ const HeatMap = () => {
   const { data: allData, dataLoading } = useFetchData();
   const x = allData[selectedType]
   const data = x?.historical || [];
-  const dates = [...new Set(data.map(d => d.date))].sort((a, b) => new Date(b) - new Date(a));
+  // const dates = [...new Set(data.map(d => d.date))].sort((a, b) => new Date(b) - new Date(a));
 
   const [showAll, setShowAll] = useState(false);
   const grouped = data.reduce((acc, item) => {
@@ -184,7 +184,7 @@ const HeatMap = () => {
             <button
               onClick={() => {
                 setShowAll(true);
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                //  window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               className="relative mb-4 px-6 py-2 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all pointer-events-auto shadow-lg"
             >
