@@ -55,8 +55,8 @@ const PriceGraph = ({ commodityType, commodityName = "Wheat", selectedDays, setS
 
       return {
         date: dateLabel,
-        price: item.avg_price,
-        prediction: isLastHistorical ? item.avg_price : null,
+        price: item.avg_price.toFixed(2),
+        prediction: isLastHistorical ? item.avg_price.toFixed(2) : null,
         isBridge: isLastHistorical,
         type: 'Historical'
       };
@@ -64,11 +64,37 @@ const PriceGraph = ({ commodityType, commodityName = "Wheat", selectedDays, setS
 
     ...rawPredictions.map(item => ({
       date: new Date(item.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }),
-      prediction: item.predicted_price,
+      prediction: item.predicted_price.toFixed(2),
       isBridge: false,
       type: 'predictions'
     }))
   ];
+  const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+
+    return (
+      <div className="bg-[#111827] border border-white/10 rounded-xl p-3 text-sm">
+        <p className="text-gray-300 mb-1">{label}</p>
+
+        {/* SHOW PRICE ALWAYS IF EXISTS */}
+        {data.price && (
+          <p className="text-green-400">
+            price : {data.price}
+          </p>
+        )}
+
+        {/* SHOW PREDICTION ONLY IF NOT BRIDGE */}
+        {!data.isBridge && data.prediction && (
+          <p className="text-red-400">
+            prediction : {data.prediction}
+          </p>
+        )}
+      </div>
+    );
+  }
+  return null;
+};
 
   const hasPrediction = rawPredictions.length > 0;
 
@@ -167,12 +193,7 @@ const PriceGraph = ({ commodityType, commodityName = "Wheat", selectedDays, setS
                     tickFormatter={(value) => `₹${(value / 1000).toFixed(2)}k`}
                   />
                   <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#111827',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '16px',
-                      color: '#fff'
-                    }}
+                    content={CustomTooltip}
                   />
                   <Area
                     type="monotone"
