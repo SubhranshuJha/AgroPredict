@@ -1,12 +1,14 @@
 import { filterData } from "./filter";
 import { sortData } from "./sort";
 
-export const processData = ({
-    data = [],
-    filters = {},
-    sortBy,
-    order = 1,
-}) => {
+export const processData = (
+    {
+        data = [],
+        filters = {},
+        sortBy,
+        order = 1,
+    }
+) => {
     let result = Array.isArray(data) ? [...data] : [];
 
     // filter

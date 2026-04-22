@@ -184,7 +184,7 @@ const HeatMap = () => {
             <button
               onClick={() => {
                 setShowAll(true);
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                //  window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               className="relative mb-4 px-6 py-2 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-all pointer-events-auto shadow-lg"
             >
