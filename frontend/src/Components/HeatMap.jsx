@@ -9,7 +9,7 @@ const HeatMap = () => {
   const { data: allData, dataLoading } = useFetchData();
   const x = allData[selectedType]
   const data = x?.historical || [];
-  const dates = [...new Set(data.map(d => d.date))].sort((a, b) => new Date(b) - new Date(a));
+  // const dates = [...new Set(data.map(d => d.date))].sort((a, b) => new Date(b) - new Date(a));
 
   const [showAll, setShowAll] = useState(false);
   const grouped = data.reduce((acc, item) => {
@@ -41,10 +41,10 @@ const HeatMap = () => {
     const diff = todayPrice - yesterdayPrice;
     const percent = ((diff / yesterdayPrice) * 100);
 
-    let bgColor = "bg-slate-400 dark:bg-slate-600";
+    let bgColor = "bg-slate-400 dark:bg-slate-700";
 
-    if (diff > 0) bgColor = "bg-emerald-400 dark:bg-emerald-500";
-    if (diff < 0) bgColor = "bg-red-400 dark:bg-red-500";
+    if (diff > 0) bgColor = "bg-green-400 dark:bg-green-600";
+    if (diff < 0) bgColor = "bg-red-400 dark:bg-red-600";
 
     return {
       name: commodity,

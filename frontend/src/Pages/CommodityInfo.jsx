@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import iconMap from '../assets/map.json'
 import { useFetchData } from '../contexts/Data'
