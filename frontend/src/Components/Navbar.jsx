@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import ThemeButton from './ThemeButton'
-import Logo from '../../public/icons/Logo.png'
+import Logo from '/icons/Logo.png'
 
 function Navbar() {
   const items = [
