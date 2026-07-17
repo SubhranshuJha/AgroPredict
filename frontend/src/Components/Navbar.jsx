@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import ThemeButton from './ThemeButton'
-import Logo from '/icons/Logo.png'
+// import Logo from '/icons/Logo.png'
 
 function Navbar() {
   const items = [
@@ -16,10 +16,10 @@ function Navbar() {
     bg-[#ffffffcc] dark:bg-slate-900/80 backdrop-blur-xl 
     border border-[#e0ddd7] dark:border-white/10 
     rounded-2xl shadow-md'>
-
+      {/* { console.log('Navbar rendered' , Logo ) } */}
       {/* LEFT */}
       <Link to={'/'} className="flex items-center gap-3">
-        <img src={Logo} alt="AgroPredict" className='h-9 w-auto' />
+        <img src="/icons/Logo.png"  alt="AgroPredict" className='h-9 w-auto' />
         <span className="text-lg font-bold tracking-tight text-gray-800 dark:text-white hidden sm:block">
           AGRO<span className="text-[#2f855a] dark:text-emerald-400">PREDICT</span>
         </span>
