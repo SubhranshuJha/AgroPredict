@@ -18,8 +18,15 @@ const ScrollToTop = () => {
 
 
 function Layout() {
+    const { pathname } = useLocation();
     return (
-        <div className='w-full flex flex-col min-h-screen'>
+        <div className={`w-full flex flex-col min-h-screen 
+        ${
+        pathname === "/"
+          ? "bg-[#f1f1f0] dark:bg-black"
+          : "bg-[#B4EBE6]/20 dark:bg-[#020617]"
+      }
+        `}>
 
             <Navbar />
             <ScrollToTop />
