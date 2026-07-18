@@ -43,7 +43,7 @@ const DataProvider = ({ children }) => {
         return parsed.data;
     } catch (err) {
         localStorage.removeItem(DATA_KEY);
-
+        console.log("ERROR::DataProvider.jsx::",err)
         return {
             cereals: [],
             vegetables: [],

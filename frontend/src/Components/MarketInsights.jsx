@@ -1,28 +1,28 @@
 import React from 'react'
+const Insight = ({ label, value, green, red }) => {
+    return (
+        <div className="flex justify-between items-center">
+            <span className="text-gray-500 dark:text-gray-400">
+                {label}
+            </span>
 
-function MarketInsights({ stats, changeValue, selectedDays }) {
-
-    const Insight = ({ label, value, green, red }) => {
-        return (
-            <div className="flex justify-between items-center">
-                <span className="text-gray-500 dark:text-gray-400">
-                    {label}
-                </span>
-
-                <span
-                    className={`
+            <span
+                className={`
                         font-semibold
                         ${green ? "text-green-500 dark:text-green-400" : ""}
                         ${red ? "text-red-500 dark:text-red-400" : ""}
                         ${!green && !red ? "text-gray-800 dark:text-gray-200" : ""}
                     `}
-                >
-                    {value}
-                </span>
-            </div>
-        )
-    }
-    
+            >
+                {value}
+            </span>
+        </div>
+    )
+}
+function MarketInsights({ stats, changeValue, selectedDays }) {
+
+
+
     return (
         <div className="w-full">
 
@@ -44,8 +44,8 @@ function MarketInsights({ stats, changeValue, selectedDays }) {
                     <Insight
                         label="Current Price"
                         value={`₹${stats?.currentPrice
-                                ? stats.currentPrice.toFixed(2)
-                                : 0
+                            ? stats.currentPrice.toFixed(2)
+                            : 0
                             }`}
                     />
 
@@ -83,50 +83,50 @@ function MarketInsights({ stats, changeValue, selectedDays }) {
                     />
 
                     {/* PRICE RANGE BAR */}
-<div className="pt-4">
+                    <div className="pt-4">
 
-  {stats?.lowestPrice !== undefined &&
-   stats?.highestPrice !== undefined &&
-   stats?.currentPrice !== undefined && (() => {
+                        {stats?.lowestPrice !== undefined &&
+                            stats?.highestPrice !== undefined &&
+                            stats?.currentPrice !== undefined && (() => {
 
-    const min = stats.lowestPrice
-    const max = stats.highestPrice
-    const current = stats.currentPrice
+                                const min = stats.lowestPrice
+                                const max = stats.highestPrice
+                                const current = stats.currentPrice
 
-    const percentage = max !== min
-      ? ((current - min) / (max - min)) * 100
-      : 0
+                                const percentage = max !== min
+                                    ? ((current - min) / (max - min)) * 100
+                                    : 0
 
-    return (
-      <div className="space-y-2">
+                                return (
+                                    <div className="space-y-2">
 
-        {/* LABELS */}
-        <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-          <span>₹{min.toFixed(2)}</span>
-          <span>₹{max.toFixed(2)}</span>
-        </div>
+                                        {/* LABELS */}
+                                        <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                                            <span>₹{min.toFixed(2)}</span>
+                                            <span>₹{max.toFixed(2)}</span>
+                                        </div>
 
-        {/* BAR BACKGROUND */}
-        <div className="relative w-full h-2 bg-[#d6d3cd] dark:bg-gray-700 rounded-full">
+                                        {/* BAR BACKGROUND */}
+                                        <div className="relative w-full h-2 bg-[#d6d3cd] dark:bg-gray-700 rounded-full">
 
-          {/* FILLED PART ONLY */}
-          <div
-            className="h-2 rounded-full bg-linear-to-r from-red-400 via-yellow-400 to-green-400"
-            style={{ width: `${percentage}%` }}
-          />
+                                            {/* FILLED PART ONLY */}
+                                            <div
+                                                className="h-2 rounded-full bg-linear-to-r from-red-400 via-yellow-400 to-green-400"
+                                                style={{ width: `${percentage}%` }}
+                                            />
 
-        </div>
+                                        </div>
 
-        {/* CURRENT PRICE */}
-        <div className="text-xs text-center text-gray-600 dark:text-gray-300">
-          Current: ₹{current.toFixed(2)}
-        </div>
+                                        {/* CURRENT PRICE */}
+                                        <div className="text-xs text-center text-gray-600 dark:text-gray-300">
+                                            Current: ₹{current.toFixed(2)}
+                                        </div>
 
-      </div>
-    )
-  })()}
+                                    </div>
+                                )
+                            })()}
 
-</div>
+                    </div>
 
                 </div>
             </div>

@@ -4,6 +4,34 @@ import iconMap from '../assets/map.json'
 import { useFetchData } from '../contexts/data/useFetchData'
 import { useCommodityStats } from '../hooks/commodityUtils'
 import { PriceGraph, PredictionTable, MarketInsights, BackBtn } from '../Components'
+
+const Card = ({ title, value, green, red }) => {
+  return (
+    <div
+      className="
+          p-5 rounded-2xl border
+          bg-white text-gray-800 border-[#d6d3cd]
+          dark:bg-[#111827] dark:text-white dark:border-white/10
+          shadow-sm hover:shadow-md transition
+        "
+    >
+      <p className="text-xs text-gray-500 dark:text-gray-400">
+        {title}
+      </p>
+
+      <h2
+        className={`
+            text-2xl font-bold mt-2
+            ${green ? "text-green-500 dark:text-green-400" : ""}
+            ${red ? "text-red-500 dark:text-red-400" : ""}
+            ${!green && !red ? "text-gray-900 dark:text-white" : ""}
+          `}
+      >
+        {value}
+      </h2>
+    </div>
+  )
+}
 function CommodityInfo() {
 
   const { commodity_Type, commodityId } = useParams()
@@ -23,33 +51,7 @@ function CommodityInfo() {
     ? `${stats.change > 0 ? "+" : ""}${stats.changePercent}%`
     : "0%"
 
-  const Card = ({ title, value, green, red }) => {
-    return (
-      <div
-        className="
-          p-5 rounded-2xl border
-          bg-white text-gray-800 border-[#d6d3cd]
-          dark:bg-[#111827] dark:text-white dark:border-white/10
-          shadow-sm hover:shadow-md transition
-        "
-      >
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          {title}
-        </p>
 
-        <h2
-          className={`
-            text-2xl font-bold mt-2
-            ${green ? "text-green-500 dark:text-green-400" : ""}
-            ${red ? "text-red-500 dark:text-red-400" : ""}
-            ${!green && !red ? "text-gray-900 dark:text-white" : ""}
-          `}
-        >
-          {value}
-        </h2>
-      </div>
-    )
-  }
 
   return (
     <div className="min-h-screen bg-[#f1f1f0] dark:bg-black py-8">
