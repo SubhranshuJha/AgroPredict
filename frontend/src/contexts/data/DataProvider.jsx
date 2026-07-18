@@ -6,7 +6,7 @@ import { fetchAllDataAPI, fetchAlertsAPI } from './dataAxiosService';
 
 const DATA_KEY = "market_data";
 const ALERTS_KEY = "market_alerts";
-const CACHE_TIME = 1000 * 60 * 10;   // 10 min
+const CACHE_TIME = 1000 * 60 * 30;   // 30 min
 const EMPTY_DATA = {
     cereals: [],
     vegetables: [],
