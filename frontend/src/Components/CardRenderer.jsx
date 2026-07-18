@@ -111,9 +111,9 @@ function CardRenderer() {
 
       {/* Main container */}
 
-      <div className="py-5 w-11/12 mx-auto min-h-11/12 ">
+      <div className="py-5 w-[95%] sm:w-11/12 mx-auto min-h-11/12 ">
 
-        <div className="mt-2 p-5 min-h-screen rounded-3xl shadow shadow-taupe-600 dark:bg-green-900/5">
+        <div className="mt-2 p-3 sm:p-5 min-h-screen rounded-3xl shadow shadow-taupe-600 dark:bg-green-900/5">
        
           <SearchBar
             search={search}

@@ -4,7 +4,7 @@ import { CardRenderer } from "../Components";
 function Home() {
   return (
     <div className="bg-linear-to-b from-[#f1f1f0] via-[#e9e7e3] to-[#dde8e1] dark:from-black dark:via-green-900/10 dark:to-blue-950/5 text-gray-800 dark:text-white min-h-screen">
-      { console.log("API URL:", import.meta.env.VITE_API_URL) }
+
       {/* HERO SECTION */}
       <section className="flex flex-col items-center justify-center text-center px-6 py-12 pb-12">
 

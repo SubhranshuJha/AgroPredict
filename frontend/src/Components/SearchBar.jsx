@@ -25,10 +25,10 @@ function SearchBar({
 
     return (
         //  🔍 Search + Filters (searchBar area) 
-        <div className="w-full mb-4 flex items-center gap-3 border p-3 rounded-xl flex-wrap">
+        <div className="w-full mb-4 flex items-center gap-2 sm:gap-3 border p-3 rounded-xl flex-wrap">
 
             {/* Search */}
-            <div className="relative flex-1 min-w-50">
+            <div className="relative w-full sm:flex-1 sm:min-w-50">
                 {/* svg (search) */}
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                     <svg
@@ -60,7 +60,7 @@ function SearchBar({
             <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="p-2 rounded-xl border dark:bg-black"
+                className="flex-1 sm:flex-none p-2 rounded-xl border dark:bg-black min-w-0"
             >
                 <option value="">Sort by</option>
                 {sortOptions.map((opt, i) => (
@@ -72,7 +72,7 @@ function SearchBar({
             <select
                 value={filterBy || ""}
                 onChange={(e) => setFilterBy(e.target.value || null)}
-                className="p-2 rounded-xl border dark:bg-black"
+                className="flex-1 sm:flex-none p-2 rounded-xl border dark:bg-black min-w-0"
             >
                 <option value="">Filter by</option>
                 {filterOptions.map((opt, i) => (
@@ -116,7 +116,7 @@ function SearchBar({
                 <button
                     key={t.key}
                     onClick={() => setTrend(t.key)}
-                    className={`px-3 py-2 rounded-xl border flex items-center gap-1 whitespace-nowrap
+                    className={`px-2.5 sm:px-3 py-2 text-sm sm:text-base rounded-xl border flex items-center gap-1 whitespace-nowrap
                   ${trend === t.key
                             ? "bg-blue-500/70"
                             : "dark:bg-black"

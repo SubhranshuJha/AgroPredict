@@ -83,9 +83,9 @@ const HeatMap = () => {
     <div className="w-full flex flex-col gap-8 py-10 bg-[#eceae6] dark:bg-[#0b0e14] rounded-3xl shadow-md border border-[#d6d3cd] dark:border-white/5 transition-all">
 
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row justify-between items-center px-10 gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-center px-4 sm:px-6 md:px-10 gap-6">
         <div className="text-center md:text-left">
-          <h2 className="text-3xl font-black text-gray-800 dark:text-white tracking-tight italic">
+          <h2 className="text-2xl sm:text-3xl font-black text-gray-800 dark:text-white tracking-tight italic">
             MARKET <span className="text-emerald-500 uppercase">Intensity</span>
           </h2>
           <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-[0.2em] mt-1">
@@ -93,7 +93,7 @@ const HeatMap = () => {
           </p>
         </div>
         {/* top btns and sortings */}
-        <div className="relative min-w-50 flex gap-2">
+        <div className="relative w-full md:w-auto md:min-w-50 flex flex-wrap justify-center gap-2">
           {/* filter by type */}
           {["cereals", "vegetables", "fruits"]
             .map(
@@ -102,7 +102,7 @@ const HeatMap = () => {
                 <button
                   key={type}
                   className={
-                    `px-3 dark:text-indigo-200/90 font-semibold border border-cyan-600 rounded-md
+                    `px-3 py-2 md:py-0 dark:text-indigo-200/90 font-semibold border border-cyan-600 rounded-md
                     ${type === selectedType ? "bg-[#74166e]" : "dark:bg-black"}
                     `}
                   onClick={() => { setSelectedType(type); setShowAll(false); }}
@@ -112,28 +112,30 @@ const HeatMap = () => {
             )
           }
           {/* dropdown button for sorting*/}
-          <select
-            value={sorted}
-            onChange={(e) => setSorted(e.target.value)}
-            className="appearance-none bg-[#e5e3df] dark:bg-slate-800 text-gray-700 dark:text-gray-200 py-3 px-6 pr-12 rounded-2xl font-black text-xs uppercase tracking-widest border border-[#d6d3cd] dark:border-transparent focus:border-emerald-500 outline-none cursor-pointer transition-all shadow-sm"
-          >
-            <option value="asc-percent">Percent: High to Low</option>
-            <option value="desc-percent">Percent: Low to High</option>
-            <option value="asc-alpha">Ascending alphabetical</option>
-            <option value="desc-alpha">Descending alphabetical</option>
-          </select>
+          <div className="relative w-full sm:w-auto">
+            <select
+              value={sorted}
+              onChange={(e) => setSorted(e.target.value)}
+              className="w-full appearance-none bg-[#e5e3df] dark:bg-slate-800 text-gray-700 dark:text-gray-200 py-3 px-6 pr-12 rounded-2xl font-black text-xs uppercase tracking-widest border border-[#d6d3cd] dark:border-transparent focus:border-emerald-500 outline-none cursor-pointer transition-all shadow-sm"
+            >
+              <option value="asc-percent">Percent: High to Low</option>
+              <option value="desc-percent">Percent: Low to High</option>
+              <option value="asc-alpha">Ascending alphabetical</option>
+              <option value="desc-alpha">Descending alphabetical</option>
+            </select>
 
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-emerald-500">
-            <svg className="w-5 h-5 fill-current" viewBox="0 0 20 20">
-              <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-            </svg>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-emerald-500">
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+              </svg>
+            </div>
           </div>
         </div>
 
       </div>
 
       {/* GRID FIXED */}
-      <div className="relative w-full max-w-7xl mx-auto px-10">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-10">
 
         <div
           className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ${!showAll ? "max-h-130 overflow-hidden" : ""

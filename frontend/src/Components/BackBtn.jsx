@@ -13,8 +13,8 @@ function BackBtn() {
                         navigate("/"); // fallback route
                     }
                 }}
-                className="absolute top-10 left-6 z-50 
-            w-20 h-fit px-2 py-1 flex items-center justify-around    
+                className="absolute top-4 left-4 sm:top-10 sm:left-6 z-50 
+            w-20 h-fit px-2 py-1.5 sm:py-1 flex items-center justify-around    
              rounded-full 
             
              bg-gray-100 dark:bg-slate-800 

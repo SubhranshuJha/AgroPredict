@@ -4,7 +4,6 @@ import iconMap from '../assets/map.json'
 import { useFetchData } from '../contexts/data/useFetchData'
 import { useCommodityStats } from '../hooks/commodityUtils'
 import { PriceGraph, PredictionTable, MarketInsights, BackBtn } from '../Components'
-
 const Card = ({ title, value, green, red }) => {
   return (
     <div
@@ -56,22 +55,22 @@ function CommodityInfo() {
   return (
     <div className="min-h-screen bg-[#f1f1f0] dark:bg-black py-8">
       <BackBtn />
-      <div className="max-w-[90vw] mx-auto px-6 md:px-10 
+      <div className="max-w-[95vw] sm:max-w-[90vw] mx-auto px-4 sm:px-6 md:px-10 
                     bg-[#f8f7f4] dark:bg-[#0f172a] 
                       rounded-3xl shadow-md border border-[#d6d3cd] dark:border-white/10 
-                      p-6 md:p-8">
+                      pt-16 sm:pt-8 p-4 sm:p-6 md:p-8">
         {/* HEADER */}
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex items-center justify-between mb-6 sm:mb-10">
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <img
               src={`/icons/${iconName}.png`}
               alt={commodityName}
-              className="w-12 h-12 object-contain"
+              className="w-10 h-10 sm:w-12 sm:h-12 object-contain shrink-0"
             />
 
-            <div>
-              <h1 className="text-3xl md:text-4xl font-black">
+            <div className="min-w-0">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black break-words">
                 {commodityName}
               </h1>
             </div>

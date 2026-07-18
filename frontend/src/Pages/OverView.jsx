@@ -73,19 +73,19 @@ const ChangeCard = ({ title, data, type }) => {
           {data.map((item, index) => (
             <div
               key={item.commodity}
-              className={`flex justify-between p-3 rounded-lg transition ${isGainer ? 'bg-green-900/20 border border-green-800' : 'bg-red-900/20 border border-red-800'
+              className={`flex flex-wrap justify-between gap-x-3 gap-y-1 p-3 rounded-lg transition ${isGainer ? 'bg-green-900/20 border border-green-800' : 'bg-red-900/20 border border-red-800'
                 }`}
             >
-              <div>
-                <p className="font-medium text-yellow-100/90">{item.commodity}</p>
-                <p className="text-sm opacity-70">
+              <div className="min-w-0">
+                <p className="font-medium text-yellow-100/90 break-words">{item.commodity}</p>
+                <p className="text-xs sm:text-sm opacity-70">
                   ₹{Math.round(item.yesterdayPrice)} → ₹{Math.round(item.todayPrice)}
                   {" "}
                   ({isGainer ? '+' : '-'}₹{Math.abs(Math.round(item.difference))})
                 </p>
               </div>
 
-              <div className="text-right">
+              <div className="text-right shrink-0">
                 <p
                   className={`font-medium ${isGainer ? 'text-green-400' : 'text-red-400'
                     }`}
@@ -165,7 +165,7 @@ function OverView() {
     <div className="m-3">
       <BackBtn />
 
-      <div className="w-11/12 mx-auto my-5 min-h-[50vh] ">
+      <div className="w-[95%] sm:w-11/12 mx-auto mt-16 sm:mt-5 mb-5 min-h-[50vh] ">
         {dataLoading ? (
           <div className="flex justify-center items-center h-[50vh]">
             <GlobalLoader />

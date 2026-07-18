@@ -81,12 +81,12 @@ function Dashboard() {
       dark:bg-[#020617] dark:text-white transition-all duration-300">
       <BackBtn />
 
-      <div className="min-h-screen px-4 sm:px-8 lg:px-16 py-10 
+      <div className="min-h-screen px-4 sm:px-8 lg:px-16 pt-16 sm:pt-10 pb-10 
        transition-all duration-300">
 
         {/* HEADER */}
-        <div className="mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+        <div className="mb-6 sm:mb-10">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
             Market Dashboard
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm">
